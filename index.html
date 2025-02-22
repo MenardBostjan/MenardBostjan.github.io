@@ -3,72 +3,256 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello World</title>
+    <title>US States and Their Specialties</title>
     <style>
         body {
+            font-family: Arial, sans-serif;
             margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: black;
-            overflow: hidden;
-            color: #00ff00;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 2em;
+            background-color: #f4f4f4;
         }
-        h1 {
-            position: relative;
-            z-index: 1;
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin: 50px 0;
+            font-size: 18px;
+            text-align: left;
         }
-        canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        caption {
+            font-size: 24px;
+            margin: 20px;
         }
     </style>
 </head>
 <body>
-    <h1>Hello, World!</h1>
-    <canvas id="matrix"></canvas>
-    <script>
-        const canvas = document.getElementById('matrix');
-        const ctx = canvas.getContext('2d');
-
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        const fontSize = 16;
-        const columns = canvas.width / fontSize;
-
-        const drops = Array(Math.floor(columns)).fill(0);
-
-        function draw() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.fillStyle = '#00ff00';
-            ctx.font = `${fontSize}px monospace`;
-
-            for (let i = 0; i < drops.length; i++) {
-                const text = letters[Math.floor(Math.random() * letters.length)];
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
-
-                drops[i]++;
-            }
-        }
-
-        setInterval(draw, 33);
-
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
-    </script>
+    <table>
+        <caption>US States and Their Specialties</caption>
+        <thead>
+            <tr>
+                <th>State</th>
+                <th>Specialty</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Alabama</td>
+                <td>Space and Rocket Center</td>
+            </tr>
+            <tr>
+                <td>Alaska</td>
+                <td>Natural Beauty and Wildlife</td>
+            </tr>
+            <tr>
+                <td>Arizona</td>
+                <td>Grand Canyon</td>
+            </tr>
+            <tr>
+                <td>Arkansas</td>
+                <td>Hot Springs National Park</td>
+            </tr>
+            <tr>
+                <td>California</td>
+                <td>Hollywood and Silicon Valley</td>
+            </tr>
+            <tr>
+                <td>Colorado</td>
+                <td>Rocky Mountains and Skiing</td>
+            </tr>
+            <tr>
+                <td>Connecticut</td>
+                <td>Yale University</td>
+            </tr>
+            <tr>
+                <td>Delaware</td>
+                <td>Tax-Free Shopping</td>
+            </tr>
+            <tr>
+                <td>Florida</td>
+                <td>Beaches and Theme Parks</td>
+            </tr>
+            <tr>
+                <td>Georgia</td>
+                <td>Peaches and Coca-Cola</td>
+            </tr>
+            <tr>
+                <td>Hawaii</td>
+                <td>Beaches and Volcanoes</td>
+            </tr>
+            <tr>
+                <td>Idaho</td>
+                <td>Potatoes</td>
+            </tr>
+            <tr>
+                <td>Illinois</td>
+                <td>Chicago Architecture</td>
+            </tr>
+            <tr>
+                <td>Indiana</td>
+                <td>Indianapolis 500</td>
+            </tr>
+            <tr>
+                <td>Iowa</td>
+                <td>State Fair and Agriculture</td>
+            </tr>
+            <tr>
+                <td>Kansas</td>
+                <td>Wheat Production</td>
+            </tr>
+            <tr>
+                <td>Kentucky</td>
+                <td>Bourbon and Horse Racing</td>
+            </tr>
+            <tr>
+                <td>Louisiana</td>
+                <td>Mardi Gras and Jazz</td>
+            </tr>
+            <tr>
+                <td>Maine</td>
+                <td>Lobsters and Lighthouses</td>
+            </tr>
+            <tr>
+                <td>Maryland</td>
+                <td>Chesapeake Bay Crabs</td>
+            </tr>
+            <tr>
+                <td>Massachusetts</td>
+                <td>Harvard University and History</td>
+            </tr>
+            <tr>
+                <td>Michigan</td>
+                <td>Great Lakes and Automobiles</td>
+            </tr>
+            <tr>
+                <td>Minnesota</td>
+                <td>Lakes and Mall of America</td>
+            </tr>
+            <tr>
+                <td>Mississippi</td>
+                <td>Blues Music</td>
+            </tr>
+            <tr>
+                <td>Missouri</td>
+                <td>Gateway Arch and Barbecue</td>
+            </tr>
+            <tr>
+                <td>Montana</td>
+                <td>Glacier National Park</td>
+            </tr>
+            <tr>
+                <td>Nebraska</td>
+                <td>Cornhuskers Football</td>
+            </tr>
+            <tr>
+                <td>Nevada</td>
+                <td>Las Vegas</td>
+            </tr>
+            <tr>
+                <td>New Hampshire</td>
+                <td>Fall Foliage</td>
+            </tr>
+            <tr>
+                <td>New Jersey</td>
+                <td>Atlantic City</td>
+            </tr>
+            <tr>
+                <td>New Mexico</td>
+                <td>Hot Air Balloon Festival</td>
+            </tr>
+            <tr>
+                <td>New York</td>
+                <td>New York City and Broadway</td>
+            </tr>
+            <tr>
+                <td>North Carolina</td>
+                <td>Research Triangle Park</td>
+            </tr>
+            <tr>
+                <td>North Dakota</td>
+                <td>Badlands and Oil</td>
+            </tr>
+            <tr>
+                <td>Ohio</td>
+                <td>Rock and Roll Hall of Fame</td>
+            </tr>
+            <tr>
+                <td>Oklahoma</td>
+                <td>Native American Culture</td>
+            </tr>
+            <tr>
+                <td>Oregon</td>
+                <td>Portland and Crater Lake</td>
+            </tr>
+            <tr>
+                <td>Pennsylvania</td>
+                <td>Philadelphia History</td>
+            </tr>
+            <tr>
+                <td>Rhode Island</td>
+                <td>Mansions and Coastline</td>
+            </tr>
+            <tr>
+                <td>South Carolina</td>
+                <td>Charleston and Beaches</td>
+            </tr>
+            <tr>
+                <td>South Dakota</td>
+                <td>Mount Rushmore</td>
+            </tr>
+            <tr>
+                <td>Tennessee</td>
+                <td>Country Music and Graceland</td>
+            </tr>
+            <tr>
+                <td>Texas</td>
+                <td>BBQ and Oil</td>
+            </tr>
+            <tr>
+                <td>Utah</td>
+                <td>Salt Lake City and Skiing</td>
+            </tr>
+            <tr>
+                <td>Vermont</td>
+                <td>Maple Syrup</td>
+            </tr>
+            <tr>
+                <td>Virginia</td>
+                <td>Colonial Williamsburg</td>
+            </tr>
+            <tr>
+                <td>Washington</td>
+                <td>Seattle and Coffee</td>
+            </tr>
+            <tr>
+                <td>West Virginia</td>
+                <td>Appalachian Mountains</td>
+            </tr>
+            <tr>
+                <td>Wisconsin</td>
+                <td>Cheese and Green Bay Packers</td>
+            </tr>
+            <tr>
+                <td>Wyoming</td>
+                <td>Yellowstone National Park</td>
+            </tr>
+        </tbody>
+    </table>
 </body>
 </html>
