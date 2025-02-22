@@ -8,6 +8,7 @@
         body {
             margin: 0;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
@@ -26,11 +27,17 @@
             top: 0;
             left: 0;
         }
+        footer {
+            position: absolute;
+            bottom: 10px;
+            color: white;
+        }
     </style>
 </head>
 <body>
     <h1>Hello, World!</h1>
     <canvas id="matrix"></canvas>
+    <footer>Hosted by GitHub</footer>
     <script>
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
@@ -42,7 +49,10 @@
         const fontSize = 16;
         const columns = canvas.width / fontSize;
 
-        const drops = Array(Math.floor(columns)).fill(0);
+        const drops = Array(Math.floor(columns)).fill(0).map(() => ({
+            position: 0,
+            speed: Math.random() * 3 + 1 // Random speed between 1 and 4
+        }));
 
         function draw() {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
@@ -51,16 +61,17 @@
             ctx.fillStyle = '#00ff00';
             ctx.font = `${fontSize}px monospace`;
 
-            for (let i = 0; i < drops.length; i++) {
+            drops.forEach((drop, i) => {
                 const text = letters[Math.floor(Math.random() * letters.length)];
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                ctx.fillText(text, i * fontSize, drop.position * fontSize);
 
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
+                if (drop.position * fontSize > canvas.height && Math.random() > 0.975) {
+                    drop.position = 0;
+                    drop.speed = Math.random() * 3 + 1; // Reset speed
                 }
 
-                drops[i]++;
-            }
+                drop.position += drop.speed;
+            });
         }
 
         setInterval(draw, 33);
