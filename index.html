@@ -46,13 +46,19 @@
         canvas.height = window.innerHeight;
 
         const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const message = 'Hello, World!';
         const fontSize = 16;
-        const columns = canvas.width / fontSize;
+        const positions = [];
 
-        const drops = Array(Math.floor(columns)).fill(0).map(() => ({
-            position: 0,
-            speed: Math.random() * 3 + 1 // Random speed between 1 and 4
-        }));
+        for (let i = 0; i < message.length; i++) {
+            positions.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                angle: Math.random() * 2 * Math.PI,
+                speed: Math.random() * 3 + 1,
+                letter: message[i]
+            });
+        }
 
         function draw() {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
@@ -61,16 +67,18 @@
             ctx.fillStyle = '#00ff00';
             ctx.font = `${fontSize}px monospace`;
 
-            drops.forEach((drop, i) => {
-                const text = letters[Math.floor(Math.random() * letters.length)];
-                ctx.fillText(text, i * fontSize, drop.position * fontSize);
+            positions.forEach((pos) => {
+                ctx.fillText(pos.letter, pos.x, pos.y);
 
-                if (drop.position * fontSize > canvas.height && Math.random() > 0.975) {
-                    drop.position = 0;
-                    drop.speed = Math.random() * 3 + 1; // Reset speed
+                pos.x += Math.cos(pos.angle) * pos.speed;
+                pos.y += Math.sin(pos.angle) * pos.speed;
+
+                if (pos.x < 0 || pos.x > canvas.width || pos.y < 0 || pos.y > canvas.height) {
+                    pos.x = Math.random() * canvas.width;
+                    pos.y = Math.random() * canvas.height;
+                    pos.angle = Math.random() * 2 * Math.PI;
+                    pos.speed = Math.random() * 3 + 1;
                 }
-
-                drop.position += drop.speed;
             });
         }
 
