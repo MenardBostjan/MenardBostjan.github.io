@@ -3,79 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>US States and Their Specialties</title>
+    <title>Random Modern Page</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        /* Basic CSS for modern styling */
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            line-height: 1.6;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        header {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        nav {
+            background: #fff;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        nav ul {
+            list-style: none;
             display: flex;
             justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f4f4f4;
+            gap: 2rem;
         }
-        table {
-            width: 80%;
-            border-collapse: collapse;
-            margin: 50px 0;
-            font-size: 18px;
-            text-align: left;
+
+        nav a {
+            text-decoration: none;
+            color: #6e8efb;
+            font-weight: bold;
         }
-        th, td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
         }
-        th {
-            background-color: #4CAF50;
+
+        .card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background: #333;
             color: white;
-        }
-        tr:hover {
-            background-color: #f5f5f5;
-        }
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-        caption {
-            font-size: 24px;
-            margin: 20px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
         }
     </style>
 </head>
 <body>
-    <table>
-        <caption>US States and Their Specialties</caption>
-        <thead>
-            <tr>
-                <th>State</th>
-                <th>Specialty</th>
-            </tr>
-        </thead>
-        <tbody id="statesTableBody">
-            <!-- Data will be inserted here dynamically -->
-        </tbody>
-    </table>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const statesData = [
-                { state: "Alabama", specialty: "Space and Rocket Center" },
-                { state: "Alaska", specialty: "Natural Beauty and Wildlife" },
-                { state: "Arizona", specialty: "Grand Canyon" },
-                // Add more states data here
-            ];
+    <header>
+        <h1>Welcome to Randomness</h1>
+        <p>A modern webpage with some fun content</p>
+    </header>
 
-            const tableBody = document.getElementById("statesTableBody");
-            statesData.forEach(function(item) {
-                const row = document.createElement("tr");
-                const stateCell = document.createElement("td");
-                stateCell.textContent = item.state;
-                const specialtyCell = document.createElement("td");
-                specialtyCell.textContent = item.specialty;
-                row.appendChild(stateCell);
-                row.appendChild(specialtyCell);
-                tableBody.appendChild(row);
-            });
-        });
-    </script>
+    <nav>
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#stuff">Stuff</a></li>
+            <li><a href="#more">More</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+            <h2>Random Fact #1</h2>
+            <p>A group of flamingos is called a "flamboyance."</p>
+        </div>
+        <div class="card">
+            <h2>Random Quote</h2>
+            <p>"The universe is under no obligation to make sense to you." - Neil deGrasse Tyson</p>
+        </div>
+        <div class="card">
+            <h2>Random Idea</h2>
+            <p>What if clouds were actually cotton candy floating in the sky?</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Random Page. All rights reserved.</p>
+    </footer>
 </body>
 </html>
