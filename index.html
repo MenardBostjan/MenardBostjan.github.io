@@ -7,41 +7,23 @@
     <style>
         body {
             margin: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: black;
             overflow: hidden;
+            background: black;
             color: #00ff00;
             font-family: 'Courier New', Courier, monospace;
-            font-size: 2em;
-        }
-        h1 {
-            position: relative;
-            z-index: 1;
         }
         canvas {
             position: absolute;
             top: 0;
             left: 0;
         }
-        footer {
-            position: absolute;
-            bottom: 10px;
-            color: white;
-        }
     </style>
 </head>
 <body>
-    <h1>Hello, World!</h1>
     <canvas id="matrix"></canvas>
-    <footer>Hosted by GitHub</footer>
     <script>
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
-
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
@@ -54,9 +36,12 @@
             positions.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
+                targetX: (canvas.width / 2 - (message.length * fontSize) / 2) + i * fontSize,
+                targetY: canvas.height / 2,
                 angle: Math.random() * 2 * Math.PI,
                 speed: Math.random() * 3 + 1,
-                letter: message[i]
+                letter: message[i],
+                delay: Math.random() * 2000
             });
         }
 
@@ -67,27 +52,20 @@
             ctx.fillStyle = '#00ff00';
             ctx.font = `${fontSize}px monospace`;
 
-            positions.forEach((pos) => {
-                ctx.fillText(pos.letter, pos.x, pos.y);
-
-                pos.x += Math.cos(pos.angle) * pos.speed;
-                pos.y += Math.sin(pos.angle) * pos.speed;
-
-                if (pos.x < 0 || pos.x > canvas.width || pos.y < 0 || pos.y > canvas.height) {
-                    pos.x = Math.random() * canvas.width;
-                    pos.y = Math.random() * canvas.height;
-                    pos.angle = Math.random() * 2 * Math.PI;
-                    pos.speed = Math.random() * 3 + 1;
+            positions.forEach((pos, index) => {
+                if (pos.delay > 0) {
+                    pos.delay -= 16;
+                } else {
+                    ctx.fillText(pos.letter, pos.x, pos.y);
+                    pos.x += (pos.targetX - pos.x) * 0.05;
+                    pos.y += (pos.targetY - pos.y) * 0.05;
                 }
             });
+
+            requestAnimationFrame(draw);
         }
 
-        setInterval(draw, 33);
-
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
+        draw();
     </script>
 </body>
 </html>
