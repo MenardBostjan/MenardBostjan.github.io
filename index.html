@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Random Modern Page</title>
+    <title>Modern Webpage with Dynamic Background</title>
     <style>
         * {
             margin: 0;
@@ -14,22 +14,32 @@
 
         body {
             line-height: 1.6;
-            background-color: #f4f4f4;
             color: #333;
             min-height: 100vh;
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         header {
-            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            background: rgba(255, 255, 255, 0.1);
             color: white;
             text-align: center;
             padding: 2rem;
+            backdrop-filter: blur(10px);
         }
 
         nav {
-            background: #fff;
+            background: rgba(255, 255, 255, 0.2);
             padding: 1rem;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
         }
 
         nav ul {
@@ -41,19 +51,32 @@
 
         nav a {
             text-decoration: none;
-            color: #6e8efb;
+            color: white;
             font-weight: bold;
             padding: 0.5rem 1rem;
             border-radius: 25px;
             transition: all 0.3s ease;
-            background: rgba(110, 142, 251, 0.1);
+            position: relative;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: white;
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        nav a:hover::after {
+            transform: scaleX(1);
         }
 
         nav a:hover {
-            background: #6e8efb;
-            color: white;
-            transform: scale(1.1);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            color: #ffe600;
         }
 
         .container {
@@ -63,25 +86,26 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
-            min-height: calc(100vh - 300px); /* Ensures content fills screen */
+            min-height: calc(100vh - 300px);
         }
 
         .card {
             background: white;
             padding: 1.5rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
         }
 
         .card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
         }
 
         footer {
             text-align: center;
             padding: 1rem;
-            background: #333;
+            background: rgba(0, 0, 0, 0.1);
             color: white;
             width: 100%;
         }
@@ -121,18 +145,6 @@
         <div class="card">
             <h2>Random Thought</h2>
             <p>Why do we park in driveways and drive on parkways?</p>
-        </div>
-        <div class="card">
-            <h2>Random History</h2>
-            <p>In 1893, an engineer named George Ferris built the first Ferris wheel for the Chicago World's Fair.</p>
-        </div>
-        <div class="card">
-            <h2>Random Science</h2>
-            <p>A single bolt of lightning contains enough energy to toast 100,000 slices of bread.</p>
-        </div>
-        <div class="card">
-            <h2>Random Nonsense</h2>
-            <p>If a tomato is a fruit, is ketchup a smoothie?</p>
         </div>
     </div>
 
