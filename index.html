@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Random Modern Page</title>
     <style>
-        /* Basic CSS for modern styling */
         * {
             margin: 0;
             padding: 0;
@@ -17,6 +16,7 @@
             line-height: 1.6;
             background-color: #f4f4f4;
             color: #333;
+            min-height: 100vh;
         }
 
         header {
@@ -43,6 +43,17 @@
             text-decoration: none;
             color: #6e8efb;
             font-weight: bold;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            background: rgba(110, 142, 251, 0.1);
+        }
+
+        nav a:hover {
+            background: #6e8efb;
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .container {
@@ -52,6 +63,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
+            min-height: calc(100vh - 300px); /* Ensures content fills screen */
         }
 
         .card {
@@ -71,31 +83,7 @@
             padding: 1rem;
             background: #333;
             color: white;
-            position: fixed;
-            bottom: 0;
             width: 100%;
-        }
-
-        /* Style for list items */
-        
-        nav ul li {
-            width: 200px;
-            max-width: 33%;
-            list-style: none; /* Remove default bullet points */
-            padding: 0.5rem 1rem; /* Add padding for spacing */
-            background: #f9f9f9; /* Light background color */
-            border-radius: 2px; /* Rounded corners */
-            transition: background 0.7s; /* Smooth background transition */
-        }
-
-        nav ul li:hover {
-            background: #e0e0e0; /* Change background on hover */
-        }
-
-        nav ul li a {
-            color: #333; /* Darker text color */
-            text-decoration: none; /* Remove underline */
-            font-weight: normal; /* Normal font weight */
         }
     </style>
 </head>
@@ -126,10 +114,30 @@
             <h2>Random Idea</h2>
             <p>What if clouds were actually cotton candy floating in the sky?</p>
         </div>
+        <div class="card">
+            <h2>Random Fact #2</h2>
+            <p>Octopuses have three hearts and can change color to blend into their surroundings.</p>
+        </div>
+        <div class="card">
+            <h2>Random Thought</h2>
+            <p>Why do we park in driveways and drive on parkways?</p>
+        </div>
+        <div class="card">
+            <h2>Random History</h2>
+            <p>In 1893, an engineer named George Ferris built the first Ferris wheel for the Chicago World's Fair.</p>
+        </div>
+        <div class="card">
+            <h2>Random Science</h2>
+            <p>A single bolt of lightning contains enough energy to toast 100,000 slices of bread.</p>
+        </div>
+        <div class="card">
+            <h2>Random Nonsense</h2>
+            <p>If a tomato is a fruit, is ketchup a smoothie?</p>
+        </div>
     </div>
 
     <footer>
-        <p>&copy; 2025 Random Page. Hosted by GitHub.</p>
+        <p>© 2025 Random Page. All rights reserved.</p>
     </footer>
 </body>
 </html>
