@@ -32,6 +32,14 @@
         const fontSize = 16;
         const positions = [];
 
+        function getRandomLetters(num) {
+            let result = '';
+            for (let i = 0; i < num; i++) {
+                result += letters.charAt(Math.floor(Math.random() * letters.length));
+            }
+            return result;
+        }
+
         for (let i = 0; i < message.length; i++) {
             positions.push({
                 x: Math.random() * canvas.width,
@@ -41,7 +49,8 @@
                 angle: Math.random() * 2 * Math.PI,
                 speed: Math.random() * 3 + 1,
                 letter: message[i],
-                delay: Math.random() * 2000
+                delay: Math.random() * 2000,
+                randomLetters: getRandomLetters(50)
             });
         }
 
@@ -56,9 +65,12 @@
                 if (pos.delay > 0) {
                     pos.delay -= 16;
                 } else {
-                    ctx.fillText(pos.letter, pos.x, pos.y);
+                    ctx.fillText(pos.randomLetters.charAt(Math.floor(Math.random() * pos.randomLetters.length)), pos.x, pos.y);
                     pos.x += (pos.targetX - pos.x) * 0.05;
                     pos.y += (pos.targetY - pos.y) * 0.05;
+                    if (Math.abs(pos.x - pos.targetX) < 1 && Math.abs(pos.y - pos.targetY) < 1) {
+                        ctx.fillText(pos.letter, pos.targetX, pos.targetY);
+                    }
                 }
             });
 
