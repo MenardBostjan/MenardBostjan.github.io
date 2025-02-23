@@ -2,39 +2,332 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>French Roulette</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* CSS code will be embedded here for completeness */
+        .roulette-layout {
+            width: 400px;
+            height: 600px;
+            position: relative;
+            background-color: white;
+            margin: 20px auto;
+        }
+
+        .zero {
+            width: 0;
+            height: 0;
+            border-left: 60px solid transparent;
+            border-right: 60px solid transparent;
+            border-bottom: 40px solid #00FF00;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .zero span {
+            position: absolute;
+            top: 10px;
+            left: -5px;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .main-part {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .left-sections, .right-sections {
+            width: 60px;
+            height: 480px;
+            position: relative;
+        }
+
+        .number-grid {
+            border-collapse: collapse;
+        }
+
+        .number-cell {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #0000FF;
+            text-align: center;
+            vertical-align: middle;
+            position: relative;
+            font-weight: bold;
+            font-size: 16px;
+            font-family: Arial, Helvetica, sans-serif;
+            cursor: pointer;
+        }
+
+        .number-cell.red {
+            background-color: red;
+            color: white;
+        }
+
+        .number-cell.black {
+            background-color: black;
+            color: white;
+        }
+
+        .loss-count {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            color: #808080;
+            font-size: 10px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .section {
+            background-color: white;
+            border: 2px solid #0000FF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            font-family: Arial, Helvetica, sans-serif;
+            position: absolute;
+            width: 100%;
+        }
+
+        .section .loss-count {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+        }
+
+        .dozens {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .dozens .section {
+            width: 40px;
+            height: 40px;
+            background-color: red;
+            color: white;
+            position: static;
+            margin-right: -2px; /* Adjust for borders */
+        }
+
+        .dozens .section:last-child {
+            margin-right: 0;
+        }
+
+        .sum-display {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 50px;
+            height: 50px;
+            background-color: black;
+            color: white;
+            border: 2px solid #0000FF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        /* Diamond symbols (simplified as divs for now) */
+        .diamond {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            transform: rotate(45deg);
+            border: 2px solid #0000FF;
+        }
+
+        .diamond.black {
+            background-color: black;
+            left: 70px;
+            bottom: 60px;
+        }
+
+        .diamond.red {
+            background-color: red;
+            right: 70px;
+            bottom: 60px;
+        }
+
+        /* Zigzag pattern (simplified as a div with background color for now) */
+        .zigzag {
+            width: 120px;
+            height: 10px;
+            background-color: #0000FF;
+            margin: 0 auto;
+            position: relative;
+            top: 5px;
+        }
+    </style>
 </head>
 <body>
-    <div class="roulette-table">
-        <!-- Top Outside Bets -->
-        <div class="outside-bet top" data-field-id="manque"><span class="field-label">MANQUE 1-18</span><span class="probability">48.65%</span><span class="hit-count">0</span></div>
-        <div class="outside-bet top" data-field-id="impair"><span class="field-label">IMPAIR</span><span class="probability">48.65%</span><span class="hit-count">0</span></div>
-
-        <!-- Zero -->
-        <div class="zero" data-field-id="zero"><span class="field-label">0</span><span class="probability">2.70%</span><span class="hit-count">0</span></div>
-
-        <!-- Number Grid -->
-        <div class="number-grid">
-            <!-- Row 1 -->
-            <div class="number red" data-field-id="3"><span class="field-label">3</span><span class="probability">2.70%</span><span class="hit-count">0</span></div>
-            <div class="number black" data-field-id="6"><span class="field-label">6</span><span class="probability">2.70%</span><span class="hit-count">0</span></div>
-            <div class="number red" data-field-id="9"><span class="field-label">9</span><span class="probability">2.70%</span><span class="hit-count">0</span></div>
-            <!-- Continue for all numbers as per the sequence -->
-            <!-- Example for last number -->
-            <div class="number black" data-field-id="34"><span class="field-label">34</span><span class="probability">2.70%</span><span class="hit-count">0</span></div>
+    <div class="roulette-layout">
+        <div class="zero"><span>0</span></div>
+        <div class="main-part">
+            <div class="left-sections">
+                <div class="section" data-type="even" style="top: 0; height: 120px;">
+                    EVEN<span class="loss-count">0</span>
+                </div>
+                <div class="section" data-type="pair" style="top: 120px; height: 120px;">
+                    PAIR<span class="loss-count">0</span>
+                </div>
+                <div class="section" data-type="passe" style="top: 240px; height: 240px;">
+                    PASSE 19-36<span class="loss-count">0</span>
+                </div>
+            </div>
+            <table class="number-grid">
+                <tr>
+                    <td class="number-cell red" data-number="1">1<span class="loss-count">0</span></td>
+                    <td class="number-cell black" data-number="2">2<span class="loss-count">0</span></td>
+                    <td class="number-cell red" data-number="3">3<span class="loss-count">0</span></td>
+                </tr>
+                <tr>
+                    <td class="number-cell black" data-number="4">4<span class="loss-count">0</span></td>
+                    <td class="number-cell red" data-number="5">5<span class="loss-count">0</span></td>
+                    <td class="number-cell black" data-number="6">6<span class="loss-count">0</span></td>
+                </tr>
+                <tr>
+                    <td class="number-cell red" data-number="7">7<span class="loss-count">0</span></td>
+                    <td class="number-cell black" data-number="8">8<span class="loss-count">0</span></td>
+                    <td class="number-cell red" data-number="9">9<span class="loss-count">0</span></td>
+                </tr>
+                <tr>
+                    <td class="number-cell black" data-number="10">10<span class="loss-count">0</span></td>
+                    <td class="number-cell black" data-number="11">11<span class="loss-count">0</span></td>
+                    <td class="number-cell red" data-number="12">12<span class="loss-count">0</span></td>
+                </tr>
+                <tr>
+                    <td class="number-cell black" data-number="13">13<span class="loss-count">0</span></td>
+                    <td class="number-cell red" data-number="14">14<span class="loss-count">0</span></td>
+                    <td class="number-cell black" data-number="15">15<span class="loss-count">0</span></td>
+                </tr>
+                <tr>
+                    <td class="number-cell red" data-number="16">16<span class="loss-count">0</span></td>
+                    <td class="number-cell black" data-number="17">17<span class="loss-count">0</span></td>
+                    <td class="number-cell red" data-number="18">18<span class="loss-count">0</span></td>
+                </tr>
+                <tr>
+                    <td class="number-cell red" data-number="19">19<span class="loss-count">0</span></td>
+                    <td class="number-cell black" data-number="20">20<span class="loss-count">0</span></td>
+                    <td class="number-cell red" data-number="21">21<span class="loss-count">0</span></td>
+                </tr>
+                <tr>
+                    <td class="number-cell black" data-number="22">22<span class="loss-count">0</span></td>
+                    <td class="number-cell red" data-number="23">23<span class="loss-count">0</span></td>
+                    <td class="number-cell black" data-number="24">24<span class="loss-count">0</span></td>
+                </tr>
+                <tr>
+                    <td class="number-cell red" data-number="25">25<span class="loss-count">0</span></td>
+                    <td class="number-cell black" data-number="26">26<span class="loss-count">0</span></td>
+                    <td class="number-cell red" data-number="27">27<span class="loss-count">0</span></td>
+                </tr>
+                <tr>
+                    <td class="number-cell black" data-number="28">28<span class="loss-count">0</span></td>
+                    <td class="number-cell black" data-number="29">29<span class="loss-count">0</span></td>
+                    <td class="number-cell red" data-number="30">30<span class="loss-count">0</span></td>
+                </tr>
+                <tr>
+                    <td class="number-cell black" data-number="31">31<span class="loss-count">0</span></td>
+                    <td class="number-cell red" data-number="32">32<span class="loss-count">0</span></td>
+                    <td class="number-cell black" data-number="33">33<span class="loss-count">0</span></td>
+                </tr>
+                <tr>
+                    <td class="number-cell red" data-number="34">34<span class="loss-count">0</span></td>
+                    <td class="number-cell black" data-number="35">35<span class="loss-count">0</span></td>
+                    <td class="number-cell red" data-number="36">36<span class="loss-count">0</span></td>
+                </tr>
+            </table>
+            <div class="right-sections">
+                <div class="section" data-type="manque" style="top: 0; height: 240px;">
+                    MANQUE 1-18<span class="loss-count">0</span>
+                </div>
+                <div class="section" data-type="impair" style="top: 240px; height: 120px;">
+                    IMPAIR<span class="loss-count">0</span>
+                </div>
+                <div class="section" data-type="odd" style="top: 360px; height: 120px;">
+                    ODD<span class="loss-count">0</span>
+                </div>
+            </div>
         </div>
-
-        <!-- Bottom Outside Bets -->
-        <div class="outside-bet bottom" data-field-id="passe"><span class="field-label">PASSE 19-36</span><span class="probability">48.65%</span><span class="hit-count">0</span></div>
-        <div class="outside-bet bottom" data-field-id="pair"><span class="field-label">PAIR</span><span class="probability">48.65%</span><span class="hit-count">0</span></div>
-        <div class="outside-bet bottom" data-field-id="even"><span class="field-label">EVEN</span><span class="probability">48.65%</span><span class="hit-count">0</span></div>
-
-        <!-- Dozen Bets -->
-        <div class="dozen-bet" data-field-id="p12"><div class="diamond red-diamond"></div><span class="field-label">P 12</span><span class="probability">32.43%</span><span class="hit-count">0</span></div>
-        <div class="dozen-bet" data-field-id="m12"><div class="diamond black-diamond"></div><span class="field-label">M 12</span><span class="probability">32.43%</span><span class="hit-count">0</span></div>
-        <div class="dozen-bet" data-field-id="d12"><div class="diamond black-diamond"></div><span class="field-label">D 12</span><span class="probability">32.43%</span><span class="hit-count">0</span></div>
+        <div class="diamond black"></div>
+        <div class="diamond red"></div>
+        <div class="dozens">
+            <div class="section" data-type="p12">P 12<span class="loss-count">0</span></div>
+            <div class="section" data-type="m12">M 12<span class="loss-count">0</span></div>
+            <div class="section" data-type="d12">D 12<span class="loss-count">0</span></div>
+        </div>
+        <div class="zigzag"></div>
+        <div class="sum-display">Sum: 0</div>
     </div>
-    <script src="script.js"></script>
+
+    <script>
+        // JavaScript code will be embedded here for completeness
+        let totalSum = 0;
+        const sumDisplay = document.querySelector('.sum-display');
+        const numberCells = document.querySelectorAll('.number-cell');
+        const sections = document.querySelectorAll('.section');
+
+        function isSectionWinning(section, winningNumber) {
+            switch (section.dataset.type) {
+                case 'passe':
+                    return winningNumber >= 19 && winningNumber <= 36;
+                case 'pair':
+                    return winningNumber % 2 === 0;
+                case 'even':
+                    return winningNumber % 2 === 0;
+                case 'manque':
+                    return winningNumber >= 1 && winningNumber <= 18;
+                case 'impair':
+                    return winningNumber % 2 === 1;
+                case 'odd':
+                    return winningNumber % 2 === 1;
+                case 'p12':
+                    return winningNumber >= 1 && winningNumber <= 12;
+                case 'm12':
+                    return winningNumber >= 13 && winningNumber <= 24;
+                case 'd12':
+                    return winningNumber >= 25 && winningNumber <= 36;
+                default:
+                    return false;
+            }
+        }
+
+        numberCells.forEach(cell => {
+            cell.addEventListener('click', () => {
+                const winningNumber = parseInt(cell.dataset.number);
+                let losingCount = 0;
+
+                // Update number cells
+                numberCells.forEach(otherCell => {
+                    if (parseInt(otherCell.dataset.number) !== winningNumber) {
+                        otherCell.dataset.loss = (parseInt(otherCell.dataset.loss) || 0) + 1;
+                        otherCell.querySelector('.loss-count').textContent = otherCell.dataset.loss;
+                        losingCount++;
+                    }
+                });
+
+                // Update sections
+                sections.forEach(section => {
+                    if (!isSectionWinning(section, winningNumber)) {
+                        section.dataset.loss = (parseInt(section.dataset.loss) || 0) + 1;
+                        section.querySelector('.loss-count').textContent = section.dataset.loss;
+                        losingCount++;
+                    }
+                });
+
+                totalSum += losingCount;
+                sumDisplay.textContent = 'Sum: ' + totalSum;
+            });
+        });
+    </script>
 </body>
 </html>
