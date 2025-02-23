@@ -9,29 +9,33 @@
         /* CSS code will be embedded here for completeness */
         .roulette-layout {
             width: 400px;
-            height: 600px;
+            height: 800px;
             position: relative;
-            background-color: white;
+            background-color: black;
             margin: 20px auto;
         }
 
         .zero {
-            width: 120px;
-            height: 40px;
-            border-left: 60px solid transparent;
-            border-right: 60px solid transparent;
-            border-bottom: 40px solid #00FF00;
+            width: 130px;
+            height: 50px;
+            border-bottom: 60px solid #033903;
             position: relative;
             margin: 0 auto;
         }
 
-        .zero span {
+        .zero .loss-count {
+            top: 65px;
+            color: white;
+        }
+
+        .zero span.number {
             position: absolute;
-            top: 10px;
-            left: -5px;
+            top: 65px;
+            left: 50%;
+            transform: translateX(-50%);
             color: white;
             font-weight: bold;
-            font-size: 16px;
+            font-size: 20px;
             font-family: Arial, Helvetica, sans-serif;
         }
 
@@ -39,6 +43,7 @@
             display: flex;
             justify-content: center;
             margin-top: 10px;
+            background-color: black;
         }
 
         .left-sections, .right-sections {
@@ -85,7 +90,7 @@
 
         .section {
             background-color: white;
-            border: 2px solid #0000FF;
+            border: 2px solid #0a0a27;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -118,10 +123,10 @@
         }
 
         .dozens .section:last-child {
-            margin-right: 0;
+            margin-right: 0 ;
         }
 
-        .sum-display {
+       /* .sum-display {
             position: absolute;
             bottom: 10px;
             right: 10px;
@@ -136,50 +141,61 @@
             font-weight: bold;
             font-size: 16px;
             font-family: Arial, Helvetica, sans-serif;
-        }
+        } */
 
         /* Diamond symbols (simplified as divs for now) */
         .diamond {
             position: absolute;
-            width: 20px;
-            height: 20px;
+            width: 30px;
+            height: 30px;
             transform: rotate(45deg);
             border: 2px solid #0000FF;
         }
 
+        .diamond .loss-count {
+            transform: rotate(-45deg);
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            color: white;  /* Added to make it more visible */
+        }
+
         .diamond.black {
             background-color: black;
-            left: 70px;
-            bottom: 60px;
+            left: 65px;
+            bottom: 160px;
         }
 
         .diamond.red {
             background-color: red;
-            right: 70px;
-            bottom: 60px;
+            right: 65px;
+            bottom: 160px;
         }
 
         /* Zigzag pattern (simplified as a div with background color for now) */
-        .zigzag {
+      /*  .zigzag {
             width: 120px;
             height: 10px;
             background-color: #0000FF;
             margin: 0 auto;
             position: relative;
             top: 5px;
-        }
+        }*/
     </style>
 </head>
 <body>
     <div class="roulette-layout">
-        <div class="zero"><span>0</span></div>
+        <div class="zero">
+            <span class="number">0</span>
+            <span class="loss-count">0</span>
+        </div>
         <div class="main-part">
             <div class="left-sections">
-                <div class="section" data-type="pair" style="top: 120px; height: 120px;">
-                    PAIR<span class="loss-count">0</span>
-                </div>
-                <div class="section" data-type="passe" style="top: 240px; height: 240px;">
+                <div class="section" data-type="passe" style="top: 0; height: 240px;">
                     PASSE 19-36<span class="loss-count">0</span>
+                </div>
+                <div class="section" data-type="pair" style="top: 240px; height: 120px;">
+                    PAIR<span class="loss-count">0</span>
                 </div>
             </div>
             <table class="number-grid">
@@ -253,8 +269,12 @@
                 </div>
                 </div>
         </div>
-        <div class="diamond black"></div>
-        <div class="diamond red"></div>
+        <div class="diamond black" data-type="black">
+            <span class="loss-count">0</span>
+        </div>
+        <div class="diamond red" data-type="red">
+            <span class="loss-count">0</span>
+        </div>
         <div class="dozens">
             <div class="section" data-type="p12">P 12<span class="loss-count">0</span></div>
             <div class="section" data-type="m12">M 12<span class="loss-count">0</span></div>
@@ -270,8 +290,11 @@
         const sumDisplay = document.querySelector('.sum-display');
         const numberCells = document.querySelectorAll('.number-cell');
         const sections = document.querySelectorAll('.section');
+        const zeroField = document.querySelector('.zero');  // Added zero field selector
 
         function isSectionWinning(section, winningNumber) {
+            const cell = [...numberCells].find(cell => parseInt(cell.dataset.number) === winningNumber);
+            
             switch (section.dataset.type) {
                 case 'passe':
                     return winningNumber >= 19 && winningNumber <= 36;
@@ -291,6 +314,10 @@
                     return winningNumber >= 13 && winningNumber <= 24;
                 case 'd12':
                     return winningNumber >= 25 && winningNumber <= 36;
+                case 'black':
+                    return cell && cell.classList.contains('black');
+                case 'red':
+                    return cell && cell.classList.contains('red');
                 default:
                     return false;
             }
@@ -300,6 +327,13 @@
             cell.addEventListener('click', () => {
                 const winningNumber = parseInt(cell.dataset.number);
                 let losingCount = 0;
+
+                // Update zero field
+                if (winningNumber !== 0) {
+                    zeroField.dataset.loss = (parseInt(zeroField.dataset.loss) || 0) + 1;
+                    zeroField.querySelector('.loss-count').textContent = zeroField.dataset.loss;
+                    losingCount++;
+                }
 
                 // Update number cells
                 numberCells.forEach(otherCell => {
@@ -319,9 +353,47 @@
                     }
                 });
 
+                // Update diamonds
+                document.querySelectorAll('.diamond').forEach(diamond => {
+                    if (!isSectionWinning(diamond, winningNumber)) {
+                        diamond.dataset.loss = (parseInt(diamond.dataset.loss) || 0) + 1;
+                        diamond.querySelector('.loss-count').textContent = diamond.dataset.loss;
+                        losingCount++;
+                    }
+                });
+
                 totalSum += losingCount;
-                sumDisplay.textContent = 'Sum: ' + totalSum;
+                if (sumDisplay) sumDisplay.textContent = 'Sum: ' + totalSum;
             });
+        });
+
+        // Add click handler for zero field
+        zeroField.addEventListener('click', () => {
+            let losingCount = 0;
+
+            // Update number cells
+            numberCells.forEach(cell => {
+                cell.dataset.loss = (parseInt(cell.dataset.loss) || 0) + 1;
+                cell.querySelector('.loss-count').textContent = cell.dataset.loss;
+                losingCount++;
+            });
+
+            // Update sections
+            sections.forEach(section => {
+                section.dataset.loss = (parseInt(section.dataset.loss) || 0) + 1;
+                section.querySelector('.loss-count').textContent = section.dataset.loss;
+                losingCount++;
+            });
+
+            // Update diamonds
+            document.querySelectorAll('.diamond').forEach(diamond => {
+                diamond.dataset.loss = (parseInt(diamond.dataset.loss) || 0) + 1;
+                diamond.querySelector('.loss-count').textContent = diamond.dataset.loss;
+                losingCount++;
+            });
+
+            totalSum += losingCount;
+            if (sumDisplay) sumDisplay.textContent = 'Sum: ' + totalSum;
         });
     </script>
 </body>
