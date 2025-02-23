@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Snake Game</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        canvas {
+            border: 2px solid black;
+            background-color: #90EE90;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set canvas to full screen
+        canvas.width = window.innerWidth - 20;
+        canvas.height = window.innerHeight - 20;
+
+        const gridSize = 20;
+        const gridWidth = Math.floor(canvas.width / gridSize);
+        const gridHeight = Math.floor(canvas.height / gridSize);
+
+        class Snake {
+            constructor(startX, startY, color) {
+                this.positions = [{x: startX, y: startY}];
+                this.length = 1;
+                this.direction = {x: 1, y: 0};
+                this.color = color;
+                this.score = 0;
+            }
+
+            getHead() {
+                return this.positions[0];
+            }
+
+            update() {
+                const head = this.getHead();
+                const newHead = {
+                    x: (head.x + this.direction.x + gridWidth) % gridWidth,
+                    y: (head.y + this.direction.y + gridHeight) % gridHeight
+                };
+
+                // Check collision with self
+                for (let i = 3; i < this.positions.length; i++) {
+                    if (newHead.x === this.positions[i].x && newHead.y === this.positions[i].y) {
+                        return false;
+                    }
+                }
+
+                this.positions.unshift(newHead);
+                if (this.positions.length > this.length) {
+                    this.positions.pop();
+                }
+                return true;
+            }
+
+            draw() {
+                ctx.fillStyle = this.color;
+                this.positions.forEach(pos => {
+                    ctx.fillRect(pos.x * gridSize, pos.y * gridSize, gridSize - 2, gridSize - 2);
+                });
+            }
+
+            aiMove(foodPos) {
+                const head = this.getHead();
+                if (head.x < foodPos.x) this.direction = {x: 1, y: 0};
+                else if (head.x > foodPos.x) this.direction = {x: -1, y: 0};
+                else if (head.y < foodPos.y) this.direction = {x: 0, y: 1};
+                else if (head.y > foodPos.y) this.direction = {x: 0, y: -1};
+            }
+
+            reset() {
+                this.positions = [{x: Math.floor(gridWidth/4), y: Math.floor(gridHeight/2)}];
+                this.length = 1;
+                this.direction = {x: 1, y: 0};
+                this.score = 0;
+            }
+        }
+
+        class Food {
+            constructor(color) {
+                this.position = {x: 0, y: 0};
+                this.color = color;
+                this.randomize();
+            }
+
+            randomize() {
+                this.position.x = Math.floor(Math.random() * gridWidth);
+                this.position.y = Math.floor(Math.random() * gridHeight);
+            }
+
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.fillRect(
+                    this.position.x * gridSize,
+                    this.position.y * gridSize,
+                    gridSize - 2,
+                    gridSize - 2
+                );
+            }
+        }
+
+        // Initialize game objects
+        const snake1 = new Snake(Math.floor(gridWidth/4), Math.floor(gridHeight/2), 'black');
+        const snake2 = new Snake(Math.floor(3*gridWidth/4), Math.floor(gridHeight/2), 'blue');
+        const food1 = new Food('red');
+        const food2 = new Food('yellow');
+
+        function gameLoop() {
+            // Clear canvas
+            ctx.fillStyle = '#90EE90';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Update snakes
+            snake1.aiMove(food1.position);
+            snake2.aiMove(food2.position);
+
+            if (!snake1.update()) {
+                snake1.reset();
+                food1.randomize();
+            }
+            if (!snake2.update()) {
+                snake2.reset();
+                food2.randomize();
+            }
+
+            // Check food collision
+            const head1 = snake1.getHead();
+            const head2 = snake2.getHead();
+
+            if (head1.x === food1.position.x && head1.y === food1.position.y) {
+                snake1.length++;
+                snake1.score++;
+                food1.randomize();
+            }
+            if (head2.x === food2.position.x && head2.y === food2.position.y) {
+                snake2.length++;
+                snake2.score++;
+                food2.randomize();
+            }
+
+            // Draw everything
+            snake1.draw();
+            snake2.draw();
+            food1.draw();
+            food2.draw();
+
+            // Draw scores
+            ctx.fillStyle = 'black';
+            ctx.font = '20px Arial';
+            ctx.fillText(`Snake 1 Score: ${snake1.score}`, 10, 30);
+            ctx.fillText(`Snake 2 Score: ${snake2.score}`, 10, 60);
+
+            // Continue game loop
+            setTimeout(() => requestAnimationFrame(gameLoop), 100);
+        }
+
+        // Start the game
+        gameLoop();
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth - 20;
+            canvas.height = window.innerHeight - 20;
+        });
+    </script>
+</body>
+</html>
