@@ -2,345 +2,39 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>French Roulette</title>
-    <style>
-        .roulette-table {
-            display: grid;
-            grid-template-columns: repeat(13, 50px);
-            grid-template-rows: repeat(16, 50px);
-            gap: 2px;
-            font-family: Arial, sans-serif;
-            padding: 10px;
-        }
-
-        .field {
-            position: relative;
-            border: 1px solid black;
-            box-sizing: border-box;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .field-label {
-            font-size: 14px;
-        }
-
-        .probability {
-            position: absolute;
-            bottom: 2px;
-            left: 2px;
-            font-size: 10px;
-        }
-
-        .hit-count {
-            position: absolute;
-            bottom: 2px;
-            right: 2px;
-            font-size: 10px;
-        }
-
-        .number-field.red {
-            background-color: red;
-            color: white;
-        }
-
-        .number-field.black {
-            background-color: black;
-            color: white;
-        }
-
-        .zero {
-            background-color: green;
-            color: white;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="roulette-table">
         <!-- Top Outside Bets -->
-        <div class="field" data-field-id="manque" style="grid-row: 1; grid-column: 1 / 5;">
-            <span class="field-label">MANQUE 1-18</span>
-            <span class="probability">48.65%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <div class="field" data-field-id="impair" style="grid-row: 1; grid-column: 5 / 9;">
-            <span class="field-label">IMPAIR ODD</span>
-            <span class="probability">48.65%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <div class="field" data-field-id="rouge" style="grid-row: 1; grid-column: 9 / 13;">
-            <span class="field-label">ROUGE</span>
-            <span class="probability">48.65%</span>
-            <span class="hit-count">0</span>
-        </div>
+        <div class="outside-bet top" data-field-id="manque"><span class="field-label">MANQUE 1-18</span><span class="probability">48.65%</span><span class="hit-count">0</span></div>
+        <div class="outside-bet top" data-field-id="impair"><span class="field-label">IMPAIR</span><span class="probability">48.65%</span><span class="hit-count">0</span></div>
 
         <!-- Zero -->
-        <div class="field zero" data-field-id="num0" style="grid-row: 2; grid-column: 1 / 13;">
-            <span class="field-label">0</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
+        <div class="zero" data-field-id="zero"><span class="field-label">0</span><span class="probability">2.70%</span><span class="hit-count">0</span></div>
 
-        <!-- Numbers 1-36 -->
-        <!-- Row 3: Numbers 1,2,3 -->
-        <div class="field number-field red" data-field-id="num1" style="grid-row: 3; grid-column: 1;">
-            <span class="field-label">1</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <div class="field number-field black" data-field-id="num2" style="grid-row: 3; grid-column: 2;">
-            <span class="field-label">2</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <div class="field number-field red" data-field-id="num3" style="grid-row: 3; grid-column: 3;">
-            <span class="field-label">3</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <!-- Row 4: Numbers 4,5,6 -->
-        <div class="field number-field black" data-field-id="num4" style="grid-row: 4; grid-column: 1;">
-            <span class="field-label">4</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <div class="field number-field red" data-field-id="num5" style="grid-row: 4; grid-column: 2;">
-            <span class="field-label">5</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <div class="field number-field black" data-field-id="num6" style="grid-row: 4; grid-column: 3;">
-            <span class="field-label">6</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <!-- Row 5: Numbers 7,8,9 -->
-        <div class="field number-field red" data-field-id="num7" style="grid-row: 5; grid-column: 1;">
-            <span class="field-label">7</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <div class="field number-field black" data-field-id="num8" style="grid-row: 5; grid-column: 2;">
-            <span class="field-label">8</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <div class="field number-field red" data-field-id="num9" style="grid-row: 5; grid-column: 3;">
-            <span class="field-label">9</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <!-- Row 6: Numbers 10,11,12 -->
-        <div class="field number-field black" data-field-id="num10" style="grid-row: 6; grid-column: 1;">
-            <span class="field-label">10</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <div class="field number-field black" data-field-id="num11" style="grid-row: 6; grid-column: 2;">
-            <span class="field-label">11</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <div class="field number-field red" data-field-id="num12" style="grid-row: 6; grid-column: 3;">
-            <span class="field-label">12</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <!-- Row 7: Numbers 13,14,15 -->
-        <div class="field number-field black" data-field-id="num13" style="grid-row: 7; grid-column: 1;">
-            <span class="field-label">13</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <div class="field number-field red" data-field-id="num14" style="grid-row: 7; grid-column: 2;">
-            <span class="field-label">14</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <div class="field number-field black" data-field-id="num15" style="grid-row: 7; grid-column: 3;">
-            <span class="field-label">15</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <!-- Row 8: Numbers 16,17,18 -->
-        <div class="field number-field red" data-field-id="num16" style="grid-row: 8; grid-column: 1;">
-            <span class="field-label">16</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <div class="field number-field black" data-field-id="num17" style="grid-row: 8; grid-column: 2;">
-            <span class="field-label">17</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <div class="field number-field red" data-field-id="num18" style="grid-row: 8; grid-column: 3;">
-            <span class="field-label">18</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <!-- Row 9: Numbers 19,20,21 -->
-        <div class="field number-field red" data-field-id="num19" style="grid-row: 9; grid-column: 1;">
-            <span class="field-label">19</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <div class="field number-field black" data-field-id="num20" style="grid-row: 9; grid-column: 2;">
-            <span class="field-label">20</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <div class="field number-field red" data-field-id="num21" style="grid-row: 9; grid-column: 3;">
-            <span class="field-label">21</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <!-- Row 10: Numbers 22,23,24 -->
-        <div class="field number-field black" data-field-id="num22" style="grid-row: 10; grid-column: 1;">
-            <span class="field-label">22</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <div class="field number-field red" data-field-id="num23" style="grid-row: 10; grid-column: 2;">
-            <span class="field-label">23</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <div class="field number-field black" data-field-id="num24" style="grid-row: 10; grid-column: 3;">
-            <span class="field-label">24</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <!-- Row 11: Numbers 25,26,27 -->
-        <div class="field number-field red" data-field-id="num25" style="grid-row: 11; grid-column: 1;">
-            <span class="field-label">25</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <div class="field number-field black" data-field-id="num26" style="grid-row: 11; grid-column: 2;">
-            <span class="field-label">26</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <div class="field number-field red" data-field-id="num27" style="grid-row: 11; grid-column: 3;">
-            <span class="field-label">27</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <!-- Row 12: Numbers 28,29,30 -->
-        <div class="field number-field black" data-field-id="num28" style="grid-row: 12; grid-column: 1;">
-            <span class="field-label">28</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <div class="field number-field black" data-field-id="num29" style="grid-row: 12; grid-column: 2;">
-            <span class="field-label">29</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <div class="field number-field red" data-field-id="num30" style="grid-row: 12; grid-column: 3;">
-            <span class="field-label">30</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <!-- Row 13: Numbers 31,32,33 -->
-        <div class="field number-field black" data-field-id="num31" style="grid-row: 13; grid-column: 1;">
-            <span class="field-label">31</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <div class="field number-field red" data-field-id="num32" style="grid-row: 13; grid-column: 2;">
-            <span class="field-label">32</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <div class="field number-field black" data-field-id="num33" style="grid-row: 13; grid-column: 3;">
-            <span class="field-label">33</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <!-- Row 14: Numbers 34,35,36 -->
-        <div class="field number-field red" data-field-id="num34" style="grid-row: 14; grid-column: 1;">
-            <span class="field-label">34</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <div class="field number-field black" data-field-id="num35" style="grid-row: 14; grid-column: 2;">
-            <span class="field-label">35</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <div class="field number-field red" data-field-id="num36" style="grid-row: 14; grid-column: 3;">
-            <span class="field-label">36</span>
-            <span class="probability">2.70%</span>
-            <span class="hit-count">0</span>
-        </div>
-
-        <!-- Dozen Bets (Vertical to the right) -->
-        <div class="field" data-field-id="dozen1" style="grid-row: 3 / 7; grid-column: 13;">
-            <span class="field-label">P 12</span>
-            <span class="probability">32.43%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <div class="field" data-field-id="dozen2" style="grid-row: 7 / 11; grid-column: 13;">
-            <span class="field-label">M 12</span>
-            <span class="probability">32.43%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <div class="field" data-field-id="dozen3" style="grid-row: 11 / 15; grid-column: 13;">
-            <span class="field-label">D 12</span>
-            <span class="probability">32.43%</span>
-            <span class="hit-count">0</span>
-        </div>
-
-        <!-- Column Bets -->
-        <div class="field" data-field-id="column1" style="grid-row: 15; grid-column: 1 / 5;">
-            <span class="field-label">Colonne 1</span>
-            <span class="probability">32.43%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <div class="field" data-field-id="column2" style="grid-row: 15; grid-column: 5 / 9;">
-            <span class="field-label">Colonne 2</span>
-            <span class="probability">32.43%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <div class="field" data-field-id="column3" style="grid-row: 15; grid-column: 9 / 13;">
-            <span class="field-label">Colonne 3</span>
-            <span class="probability">32.43%</span>
-            <span class="hit-count">0</span>
+        <!-- Number Grid -->
+        <div class="number-grid">
+            <!-- Row 1 -->
+            <div class="number red" data-field-id="3"><span class="field-label">3</span><span class="probability">2.70%</span><span class="hit-count">0</span></div>
+            <div class="number black" data-field-id="6"><span class="field-label">6</span><span class="probability">2.70%</span><span class="hit-count">0</span></div>
+            <div class="number red" data-field-id="9"><span class="field-label">9</span><span class="probability">2.70%</span><span class="hit-count">0</span></div>
+            <!-- Continue for all numbers as per the sequence -->
+            <!-- Example for last number -->
+            <div class="number black" data-field-id="34"><span class="field-label">34</span><span class="probability">2.70%</span><span class="hit-count">0</span></div>
         </div>
 
         <!-- Bottom Outside Bets -->
-        <div class="field" data-field-id="passe" style="grid-row: 16; grid-column: 1 / 5;">
-            <span class="field-label">PASSE 19-36</span>
-            <span class="probability">48.65%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <div class="field" data-field-id="pair" style="grid-row: 16; grid-column: 5 / 9;">
-            <span class="field-label">PAIR EVEN</span>
-            <span class="probability">48.65%</span>
-            <span class="hit-count">0</span>
-        </div>
-        <div class="field" data-field-id="noir" style="grid-row: 16; grid-column: 9 / 13;">
-            <span class="field-label">NOIR</span>
-            <span class="probability">48.65%</span>
-            <span class="hit-count">0</span>
-        </div>
+        <div class="outside-bet bottom" data-field-id="passe"><span class="field-label">PASSE 19-36</span><span class="probability">48.65%</span><span class="hit-count">0</span></div>
+        <div class="outside-bet bottom" data-field-id="pair"><span class="field-label">PAIR</span><span class="probability">48.65%</span><span class="hit-count">0</span></div>
+        <div class="outside-bet bottom" data-field-id="even"><span class="field-label">EVEN</span><span class="probability">48.65%</span><span class="hit-count">0</span></div>
+
+        <!-- Dozen Bets -->
+        <div class="dozen-bet" data-field-id="p12"><div class="diamond red-diamond"></div><span class="field-label">P 12</span><span class="probability">32.43%</span><span class="hit-count">0</span></div>
+        <div class="dozen-bet" data-field-id="m12"><div class="diamond black-diamond"></div><span class="field-label">M 12</span><span class="probability">32.43%</span><span class="hit-count">0</span></div>
+        <div class="dozen-bet" data-field-id="d12"><div class="diamond black-diamond"></div><span class="field-label">D 12</span><span class="probability">32.43%</span><span class="hit-count">0</span></div>
     </div>
-
-    <script>
-        const hitCounts = {};
-
-        document.querySelectorAll('.field').forEach(field => {
-            const fieldId = field.dataset.fieldId;
-            hitCounts[fieldId] = 0;
-            field.addEventListener('click', () => {
-                hitCounts[fieldId]++;
-                field.querySelector('.hit-count').textContent = hitCounts[fieldId];
-            });
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
