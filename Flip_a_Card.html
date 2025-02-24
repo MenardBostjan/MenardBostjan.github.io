@@ -13,11 +13,11 @@
             --particle-colors: #ffeb3b, #ffc107, #ff9800;
             --button-gradient: linear-gradient(135deg, #00b4db, #0083b0);
             --button-hover-gradient: linear-gradient(135deg, #00c6ff, #0093c4);
-            --card-base-height: min(120px, 25vw);
-            --card-font-size: min(2em, 8vw);
+            --card-base-height: min(120px, 20vw);
+            --card-font-size: min(2em, 6vw);
             --button-font-size: min(1em, 4vw);
             --stats-font-size: min(1.1em, 4vw);
-            --title-font-size: min(2.5em, 10vw);
+            --title-font-size: min(2.5em, 8vw);
         }
 
         body.zen-mode {
@@ -171,10 +171,10 @@
 
         .game-container {
             display: grid;
-            gap: min(15px, 3vw);
+            gap: min(15px, 2vw);
             max-width: 1000px;
             margin: 0 auto;
-            padding: min(20px, 4vw);
+            padding: min(20px, 3vw);
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border-radius: 20px;
@@ -420,39 +420,39 @@
 
         /* Keep other styles */
         @media (max-width: 768px) {
-            .game-container {
-                grid-template-columns: repeat(4, 1fr);
+            body {
+                padding-top: 30px;
+            }
+
+            .centered-layer {
+                position: relative;
+                top: 0;
+                left: 0;
+                transform: none;
+                width: 100%;
+                max-width: none;
+                padding: 10px;
+                border-radius: 0;
+            }
+
+            .game-wrapper {
                 padding: 10px;
             }
 
-            .card {
-                height: calc(100vw / 4 - 10px);
-                font-size: calc(100vw / 10);
-            }
-        }
-
-        /* Add responsive design improvements */
-        @media (max-width: 768px) {
-            .easy-grid {
-                grid-template-columns: repeat(auto-fit, minmax(min(100px, 20vw), 1fr));
-            }
-
-            .medium-grid {
-                grid-template-columns: repeat(auto-fit, minmax(min(90px, 18vw), 1fr));
-            }
-
-            .hard-grid {
-                grid-template-columns: repeat(auto-fit, minmax(min(80px, 16vw), 1fr));
+            .game-container {
+                padding: 10px;
+                gap: 10px;
             }
 
             .stats {
                 flex-direction: column;
                 align-items: stretch;
                 gap: 10px;
+                padding: 10px;
             }
 
             .stats > * {
-                margin: 5px;
+                margin: 5px 0;
             }
 
             #difficulty {
@@ -468,14 +468,64 @@
                 width: 100%;
                 margin: 5px 0;
             }
+
+            .easy-grid, .medium-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .hard-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .card {
+                height: calc((100vw - 60px) / 4);
+                font-size: calc((100vw - 60px) / 16);
+            }
         }
 
-        /* Adjust for very small screens */
+        @media (max-width: 480px) {
+            body {
+                padding-top: 20px;
+            }
+
+            .game-container {
+                padding: 8px;
+                gap: 8px;
+            }
+
+            .card {
+                height: calc((100vw - 48px) / 4);
+                font-size: calc((100vw - 48px) / 16);
+            }
+
+            h1 {
+                font-size: calc(var(--title-font-size) * 0.3);
+                padding: 8px 0;
+            }
+
+            h2.subtitle {
+                font-size: calc(var(--title-font-size) * 0.25);
+                margin: 0 0 15px 0;
+            }
+        }
+
         @media (max-width: 360px) {
-            .track-selector {
-                width: 90vw;
-                right: -45vw;
-                transform: translateX(50%);
+            body {
+                padding-top: 15px;
+            }
+
+            .game-container {
+                padding: 5px;
+                gap: 5px;
+            }
+
+            .card {
+                height: calc((100vw - 30px) / 4);
+                font-size: calc((100vw - 30px) / 16);
+            }
+
+            .stats {
+                padding: 8px;
             }
         }
 
