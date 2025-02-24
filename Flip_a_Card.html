@@ -107,12 +107,27 @@
 
         h1 {
             text-align: center;
-            font-size: var(--title-font-size);
-            margin: 10px 0;
+            font-size: calc(var(--title-font-size) * 0.5);
+            margin: 0;
             color: #fff;
             text-shadow: 0 0 10px rgba(255,255,255,0.5);
             letter-spacing: 2px;
-            padding: 10px;
+            padding: 10px 0;
+            background: rgba(0, 0, 0, 0.5);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: calc(var(--title-font-size) * 0.4);
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: calc(var(--title-font-size) * 0.3);
+            }
         }
 
         h2.subtitle {
@@ -683,27 +698,91 @@
                 right: max(min(20px, 4vw), env(safe-area-inset-right));
             }
         }
+
+        /* Centered layer for game focus */
+        .centered-layer {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 3;
+        }
+
+        /* Responsive layout for smartphones */
+        @media (max-width: 768px) {
+            .game-container {
+                grid-template-columns: repeat(4, 1fr);
+                padding: 10px;
+            }
+
+            .card {
+                height: calc(100vw / 4 - 10px);
+                font-size: calc(100vw / 10);
+            }
+
+            .music-player {
+                bottom: 5px;
+                right: 5px;
+                padding: 8px;
+            }
+
+            .volume-control {
+                display: none;
+            }
+
+            .now-playing {
+                display: none;
+            }
+
+            .track-selector {
+                width: 90vw;
+                right: -45vw;
+                transform: translateX(50%);
+            }
+        }
+
+        /* Adjust for very small screens */
+        @media (max-width: 360px) {
+            .game-container {
+                grid-template-columns: repeat(4, 1fr);
+                padding: 5px;
+            }
+
+            .card {
+                height: calc(100vw / 4 - 5px);
+                font-size: calc(100vw / 12);
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="game-wrapper">
-        <h1>✨ Memory Card Game ✨</h1>
-        <h2 class="subtitle">Find all pairs of cards</h2>
-        <div class="stats">
-            <span>Moves: <span id="moves">0</span></span>
-            <span class="time-display">Time: <span id="time">0</span>s</span>
-            <div class="select-wrapper">
-                <select id="difficulty" onchange="resetGame()">
-                    <option value="easy">Easy (4x4)</option>
-                    <option value="medium">Medium (6x4)</option>
-                    <option value="hard">Hard (6x6)</option>
-                </select>
+    <div class="centered-layer">
+        <div class="game-wrapper">
+            <h1>✨ Memory Card Game ✨</h1>
+            <h2 class="subtitle">Find all pairs of cards</h2>
+            <div class="stats">
+                <span>Moves: <span id="moves">0</span></span>
+                <span class="time-display">Time: <span id="time">0</span>s</span>
+                <div class="select-wrapper">
+                    <select id="difficulty" onchange="resetGame()">
+                        <option value="easy">Easy (4x4)</option>
+                        <option value="medium">Medium (6x4)</option>
+                        <option value="hard">Hard (6x6)</option>
+                    </select>
+                </div>
+                <button id="resetButton" onclick="resetGame()">Reset Game</button>
+                <button id="zenModeButton" onclick="toggleZenMode()">Zen Mode</button>
             </div>
-            <button id="resetButton" onclick="resetGame()">Reset Game</button>
-            <button id="zenModeButton" onclick="toggleZenMode()">Zen Mode</button>
-        </div>
-        <div class="game-container" id="gameContainer">
-            <!-- Cards will be added here via JavaScript -->
+            <div class="game-container" id="gameContainer">
+                <!-- Cards will be added here via JavaScript -->
+            </div>
         </div>
     </div>
     <!-- Update music player -->
