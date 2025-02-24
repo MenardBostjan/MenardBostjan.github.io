@@ -39,6 +39,7 @@
             position: relative;
             overflow-x: hidden;
             transition: background 1s ease;
+            padding-top: 60px; /* Restore top padding */
         }
 
         /* Starry background effect */
@@ -403,215 +404,30 @@
             border-color: rgba(255, 255, 255, 0.4);
         }
 
-        /* Add music player styles */
-        .music-player {
-            position: fixed;
-            bottom: min(20px, 4vw);
-            right: min(20px, 4vw);
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: min(15px, 3vw);
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            transition: all 0.3s ease;
-            max-width: 90vw;
+        /* Remove all music player styles */
+        .music-player,
+        .music-controls,
+        .music-btn,
+        .volume-control,
+        .volume-slider,
+        .now-playing,
+        .track-selector,
+        .track-list,
+        .track-item,
+        .track-toggle {
+            display: none;
         }
 
-        .music-player:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        .music-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .music-btn {
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 1.5em;
-            padding: min(5px, 1.5vw);
-            transition: all 0.3s ease;
-            opacity: 0.8;
-            min-width: min(44px, 12vw);
-            min-height: min(44px, 12vw);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .music-btn:hover {
-            opacity: 1;
-            transform: scale(1.1);
-        }
-
-        .volume-control {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .volume-slider {
-            -webkit-appearance: none;
-            width: min(80px, 20vw);
-            height: 4px;
-            border-radius: 2px;
-            background: rgba(255, 255, 255, 0.2);
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .volume-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .volume-slider::-webkit-slider-thumb:hover {
-            transform: scale(1.2);
-        }
-
-        .volume-slider::-moz-range-thumb {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: white;
-            cursor: pointer;
-            border: none;
-            transition: all 0.3s ease;
-        }
-
-        .volume-slider::-moz-range-thumb:hover {
-            transform: scale(1.2);
-        }
-
-        body.zen-mode .music-player {
-            background: rgba(52, 152, 219, 0.2);
-        }
-
-        .now-playing {
-            font-size: min(0.9em, 3.5vw);
-            opacity: 0.8;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: min(150px, 30vw);
-        }
-
+        /* Keep other styles */
         @media (max-width: 768px) {
-            .music-player {
-                bottom: 10px;
-                right: 10px;
+            .game-container {
+                grid-template-columns: repeat(4, 1fr);
                 padding: 10px;
             }
-            
-            .now-playing {
-                display: none;
-            }
-            
-            .volume-slider {
-                width: 60px;
-            }
-        }
 
-        /* Add track selector styles */
-        .track-selector {
-            position: absolute;
-            bottom: 100%;
-            right: 0;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 15px;
-            border-radius: 15px;
-            margin-bottom: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            display: none;
-            width: min(200px, 80vw);
-            max-height: 60vh;
-            overflow-y: auto;
-        }
-
-        .track-selector.show {
-            display: block;
-        }
-
-        .track-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .track-item {
-            padding: min(8px, 2vw) min(12px, 3vw);
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            color: white;
-            font-size: min(0.9em, 3.5vw);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .track-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .track-item.active {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .track-item::before {
-            content: '🎵';
-            font-size: 1.1em;
-        }
-
-        .track-item.active::before {
-            content: '▶️';
-        }
-
-        /* Update music player for track selector */
-        .music-player {
-            position: relative;
-        }
-
-        .track-toggle {
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 1.2em;
-            padding: min(5px, 1.5vw);
-            opacity: 0.8;
-            transition: all 0.3s ease;
-            min-width: min(44px, 12vw);
-            min-height: min(44px, 12vw);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .track-toggle:hover {
-            opacity: 1;
-            transform: scale(1.1);
-        }
-
-        @media (max-width: 768px) {
-            .track-selector {
-                right: 0;
-                width: 180px;
+            .card {
+                height: calc(100vw / 4 - 10px);
+                font-size: calc(100vw / 10);
             }
         }
 
@@ -656,20 +472,6 @@
 
         /* Adjust for very small screens */
         @media (max-width: 360px) {
-            .music-player {
-                bottom: 5px;
-                right: 5px;
-                padding: 8px;
-            }
-
-            .volume-control {
-                display: none;
-            }
-
-            .now-playing {
-                display: none;
-            }
-
             .track-selector {
                 width: 90vw;
                 right: -45vw;
@@ -692,11 +494,6 @@
                 padding-right: max(min(20px, 3vw), env(safe-area-inset-right));
                 padding-bottom: max(min(20px, 3vw), env(safe-area-inset-bottom));
             }
-
-            .music-player {
-                bottom: max(min(20px, 4vw), env(safe-area-inset-bottom));
-                right: max(min(20px, 4vw), env(safe-area-inset-right));
-            }
         }
 
         /* Centered layer for game focus */
@@ -713,52 +510,6 @@
             border-radius: 15px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             z-index: 3;
-        }
-
-        /* Responsive layout for smartphones */
-        @media (max-width: 768px) {
-            .game-container {
-                grid-template-columns: repeat(4, 1fr);
-                padding: 10px;
-            }
-
-            .card {
-                height: calc(100vw / 4 - 10px);
-                font-size: calc(100vw / 10);
-            }
-
-            .music-player {
-                bottom: 5px;
-                right: 5px;
-                padding: 8px;
-            }
-
-            .volume-control {
-                display: none;
-            }
-
-            .now-playing {
-                display: none;
-            }
-
-            .track-selector {
-                width: 90vw;
-                right: -45vw;
-                transform: translateX(50%);
-            }
-        }
-
-        /* Adjust for very small screens */
-        @media (max-width: 360px) {
-            .game-container {
-                grid-template-columns: repeat(4, 1fr);
-                padding: 5px;
-            }
-
-            .card {
-                height: calc(100vw / 4 - 5px);
-                font-size: calc(100vw / 12);
-            }
         }
     </style>
 </head>
@@ -785,28 +536,7 @@
             </div>
         </div>
     </div>
-    <!-- Update music player -->
-    <div class="music-player">
-        <div class="track-selector">
-            <div class="track-list">
-                <div class="track-item active" data-src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3">Calm Lo-fi Study</div>
-            </div>
-        </div>
-        <div class="music-controls">
-            <button class="music-btn" id="playPauseBtn" onclick="toggleMusic()">▶️</button>
-            <div class="volume-control">
-                <button class="music-btn" id="muteBtn" onclick="toggleMute()">🔊</button>
-                <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="50">
-            </div>
-            <button class="track-toggle" onclick="toggleTrackSelector()">🎵</button>
-        </div>
-        <div class="now-playing">Now Playing: Calm Lo-fi Study</div>
-    </div>
-    <!-- Update audio elements -->
-    <audio id="bgMusic" loop>
-        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3" type="audio/mpeg">
-    </audio>
-    <!-- Add audio elements with more futuristic sounds -->
+    <!-- Add game sound effects -->
     <audio id="flipSound" class="hidden-audio">
         <source src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3" type="audio/mpeg">
     </audio>
@@ -816,7 +546,9 @@
     <audio id="winSound" class="hidden-audio">
         <source src="https://assets.mixkit.co/active_storage/sfx/1434/1434-preview.mp3" type="audio/mpeg">
     </audio>
-
+    <audio id="hoverSound" class="hidden-audio">
+        <source src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" type="audio/mpeg">
+    </audio>
     <script>
         // Expanded emoji set for larger grids
         const allEmojis = ['🎮', '🎨', '🌟', '🎸', '🎭', '🎪', '🎯', '🎲', '🎱', '🎳', '🎼', '🎹', '🎺', '🎻', '🎬', '🎤', '🎧', '🎪'];
@@ -888,6 +620,17 @@
                 card.appendChild(cardContent);
 
                 card.addEventListener('click', flipCard);
+                // Add hover sound effect
+                card.addEventListener('mouseenter', () => {
+                    if (!card.classList.contains('flipped')) {
+                        const hoverSound = document.getElementById('hoverSound');
+                        if (hoverSound) {
+                            hoverSound.currentTime = 0;
+                            hoverSound.volume = 0.2; // Lower volume for hover sound
+                            hoverSound.play().catch(error => console.log("Hover sound failed:", error));
+                        }
+                    }
+                });
                 gameContainer.appendChild(card);
             });
 
@@ -1035,128 +778,7 @@
             
             if (isZenMode) {
                 zenButton.textContent = 'Normal Mode';
-                stopTimer(); // Stop the timer in zen mode
-            } else {
-                zenButton.textContent = 'Zen Mode';
-                startTimer(); // Restart the timer in normal mode
-            }
-        }
-
-        // Music player functionality
-        let bgMusic = document.getElementById('bgMusic');
-        const playPauseBtn = document.getElementById('playPauseBtn');
-        const muteBtn = document.getElementById('muteBtn');
-        const volumeSlider = document.getElementById('volumeSlider');
-        let isMuted = false;
-
-        function toggleMusic() {
-            if (bgMusic.paused) {
-                bgMusic.play();
-                playPauseBtn.textContent = '⏸️';
-            } else {
-                bgMusic.pause();
-                playPauseBtn.textContent = '▶️';
-            }
-        }
-
-        function toggleMute() {
-            isMuted = !isMuted;
-            bgMusic.muted = isMuted;
-            muteBtn.textContent = isMuted ? '🔇' : '🔊';
-        }
-
-        volumeSlider.addEventListener('input', (e) => {
-            const volume = e.target.value / 100;
-            bgMusic.volume = volume;
-            if (volume === 0) {
-                muteBtn.textContent = '🔇';
-            } else {
-                muteBtn.textContent = '🔊';
-            }
-        });
-
-        // Set initial volume
-        bgMusic.volume = volumeSlider.value / 100;
-
-        // Add track selector functionality
-        const trackSelector = document.querySelector('.track-selector');
-        const trackItems = document.querySelectorAll('.track-item');
-        const nowPlaying = document.querySelector('.now-playing');
-        let isTrackSelectorVisible = false;
-
-        function toggleTrackSelector() {
-            isTrackSelectorVisible = !isTrackSelectorVisible;
-            trackSelector.classList.toggle('show', isTrackSelectorVisible);
-        }
-
-        function changeTrack(trackItem) {
-            // Update active state
-            trackItems.forEach(item => item.classList.remove('active'));
-            trackItem.classList.add('active');
-
-            // Store the current playback state and volume
-            const wasPlaying = !bgMusic.paused;
-            const currentVolume = bgMusic.volume;
-
-            // Pause current audio
-            bgMusic.pause();
-
-            // Update the source URL from the selected track
-            bgMusic.src = trackItem.getAttribute('data-src');
-            
-            // Load the audio data with the new source
-            bgMusic.load();
-            
-            // Set up the new audio
-            bgMusic.volume = currentVolume;
-
-            // Update now playing text
-            nowPlaying.textContent = 'Now Playing: ' + trackItem.textContent;
-
-            // Play if it was playing before
-            if (wasPlaying) {
-                bgMusic.play()
-                    .then(() => {
-                        playPauseBtn.textContent = '⏸️';
-                    })
-                    .catch(error => {
-                        console.error('Playback failed:', error);
-                        playPauseBtn.textContent = '▶️';
-                        trackItem.classList.remove('active');
-                    });
-            } else {
-                playPauseBtn.textContent = '▶️';
-            }
-
-            // Hide track selector
-            toggleTrackSelector();
-        }
-
-        // Add click handlers for track items
-        trackItems.forEach(trackItem => {
-            trackItem.addEventListener('click', () => changeTrack(trackItem));
-        });
-
-        // Close track selector when clicking outside
-        document.addEventListener('click', (e) => {
-            if (isTrackSelectorVisible && !e.target.closest('.music-player')) {
-                toggleTrackSelector();
-            }
-        });
-
-        // Update toggleZenMode function to preserve music state
-        function toggleZenMode() {
-            document.body.classList.toggle('zen-mode');
-            const zenButton = document.getElementById('zenModeButton');
-            const isZenMode = document.body.classList.contains('zen-mode');
-            
-            if (isZenMode) {
-                zenButton.textContent = 'Normal Mode';
                 stopTimer();
-                // Automatically start music in Zen mode if it's not already playing
-                if (bgMusic.paused) {
-                    toggleMusic();
-                }
             } else {
                 zenButton.textContent = 'Zen Mode';
                 startTimer();
@@ -1165,11 +787,6 @@
 
         // Initialize the game
         createGameBoard();
-        
-        // Make sure the third track is loaded and ready
-        bgMusic.load();
-        // Set initial volume for the third track
-        bgMusic.volume = volumeSlider.value / 100;
     </script>
 </body>
 </html>
