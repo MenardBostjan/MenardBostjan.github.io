@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Numbers - Brain Training Game</title>
+    <style>
+        :root {
+            --primary-color: #4e54c8;
+            --secondary-color: #8f94fb;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --primary-color-rgb: 78, 84, 200;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .game-container {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .game-section {
+            width: 100%;
+            text-align: center;
+        }
+
+        .number-display {
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 2rem 0;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .number-input {
+            font-size: 1.5rem;
+            padding: 0.5rem 1rem;
+            margin: 1rem 0;
+            border: none;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            width: 80%;
+            max-width: 400px;
+        }
+
+        .game-btn {
+            background-color: white;
+            color: var(--primary-color);
+            border: none;
+            border-radius: 30px;
+            padding: 0.8rem 2rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0.5rem;
+            min-width: 150px;
+        }
+
+        .game-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .game-btn.primary {
+            background-color: white;
+            color: var(--primary-color);
+        }
+
+        .game-btn.success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+            gap: 1rem;
+        }
+
+        .stat-card {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            min-width: 150px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .settings-container {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            width: 100%;
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 0.5rem;
+        }
+
+        .settings-content {
+            display: none;
+            transition: all 0.3s ease;
+        }
+
+        .settings-content.active {
+            display: block;
+        }
+
+        .settings-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .settings-label {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .settings-control {
+            flex: 2;
+            min-width: 250px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            height: 8px;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        input[type="number"], select {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 5px;
+            padding: 0.5rem;
+            color: white;
+            width: 100%;
+        }
+
+        /* Fix for dropdown options visibility */
+        select option {
+            background-color: var(--dark-color);
+            color: white;
+        }
+
+        /* Fix for dropdown arrow contrast */
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            padding-right: 30px;
+        }
+
+        .theme-options {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .theme-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .theme-option.active {
+            border-color: white;
+            transform: scale(1.2);
+        }
+
+        .theme-option.blue {
+            background: linear-gradient(to right, #4e54c8, #8f94fb);
+        }
+
+        .theme-option.green {
+            background: linear-gradient(to right, #11998e, #38ef7d);
+        }
+
+        .theme-option.purple {
+            background: linear-gradient(to right, #8e2de2, #4a00e0);
+        }
+
+        .theme-option.dark {
+            background: linear-gradient(to right, #232526, #414345);
+        }
+
+        .mode-options {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .mode-option {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .mode-option.active {
+            background-color: white;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        /* Tooltip styles */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 250px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s, visibility 0.3s;
+            font-weight: normal;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .tooltip .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -8px;
+            border-width: 8px;
+            border-style: solid;
+            border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Virtual Keypad Styles */
+        .keypad-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 280px;
+            background-color: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: move;
+            user-select: none;
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .keypad-container.active {
+            display: block;
+        }
+
+        .keypad-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .keypad-title {
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .keypad-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+        }
+
+        .keypad-close:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .keypad-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .keypad-btn {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            padding: 10px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .keypad-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .keypad-btn:active {
+            transform: translateY(1px);
+        }
+
+        .keypad-btn.special {
+            background-color: rgba(var(--primary-color-rgb), 0.35);
+        }
+
+        .keypad-btn.confirm {
+            background-color: rgba(40, 167, 69, 0.35);
+        }
+
+        .keypad-btn.delete {
+            background-color: rgba(220, 53, 69, 0.35);
+        }
+
+        .keypad-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .keypad-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: rgba(0, 0, 0, 0.4);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 999;
+            transition: all 0.3s ease;
+        }
+
+        .keypad-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .game-container, .settings-container {
+                padding: 1rem;
+            }
+            
+            .number-display {
+                font-size: 2rem;
+            }
+            
+            .stat-card {
+                min-width: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Memory Numbers</h1>
+            <p>Train your memory by remembering number sequences</p>
+        </header>
+
+        <div class="settings-container">
+            <div class="settings-header">
+                <h2>Game Settings</h2>
+                <button id="toggleSettings" class="game-btn">Hide Settings</button>
+            </div>
+            <div class="settings-content active">
+                <div class="settings-row">
+                    <div class="settings-label">Game Mode</div>
+                    <div class="settings-control mode-options">
+                        <div class="mode-option tooltip active" data-mode="sequence">
+                            Sequence
+                            <span class="tooltip-text">Each number appears one after another. You must remember and enter the entire sequence in the correct order.</span>
+                        </div>
+                        <div class="mode-option tooltip" data-mode="flash">
+                            Flash
+                            <span class="tooltip-text">All numbers appear at once for a limited time. You must remember and enter the complete set of numbers.</span>
+                        </div>
+                        <div class="mode-option tooltip" data-mode="position">
+                            Position
+                            <span class="tooltip-text">Numbers appear with their positions. You'll be asked to recall which number was at a specific position.</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="settings-row">
+                    <div class="settings-label">Numbers in set</div>
+                    <div class="settings-control">
+                        <input type="range" id="numbersInSet" min="3" max="15" value="5">
+                        <span id="numbersInSetValue">5</span>
+                    </div>
+                </div>
+                <div class="settings-row">
+                    <div class="settings-label">Digits per number</div>
+                    <div class="settings-control">
+                        <input type="range" id="digitsPerNumber" min="1" max="5" value="1">
+                        <span id="digitsPerNumberValue">1</span>
+                    </div>
+                </div>
+                <div class="settings-row">
+                    <div class="settings-label">Display time (seconds)</div>
+                    <div class="settings-control">
+                        <input type="range" id="displayTime" min="0.5" max="5" step="0.5" value="2">
+                        <span id="displayTimeValue">2</span>
+                    </div>
+                </div>
+                <div class="settings-row">
+                    <div class="settings-label">Generation Method</div>
+                    <div class="settings-control">
+                        <select id="generationMethod">
+                            <option value="random">Completely Random</option>
+                            <option value="sequential">Sequential</option>
+                            <option value="pattern">Pattern-based</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="settings-row">
+                    <div class="settings-label">Theme</div>
+                    <div class="settings-control theme-options">
+                        <div class="theme-option blue active" data-theme="blue"></div>
+                        <div class="theme-option green" data-theme="green"></div>
+                        <div class="theme-option purple" data-theme="purple"></div>
+                        <div class="theme-option dark" data-theme="dark"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-container">
+            <div class="game-section">
+                <div class="number-display" id="numberDisplay">
+                    Ready to start?
+                </div>
+                
+                <div id="inputSection" style="display: none;">
+                    <input type="text" id="numberInput" class="number-input" placeholder="Enter the numbers...">
+                </div>
+                
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-value" id="scoreValue">0</div>
+                        <div class="stat-label">Score</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="levelValue">1</div>
+                        <div class="stat-label">Level</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="triesValue">0</div>
+                        <div class="stat-label">Tries</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="accuracyValue">0%</div>
+                        <div class="stat-label">Accuracy</div>
+                    </div>
+                </div>
+                
+                <div class="button-container">
+                    <button id="startBtn" class="game-btn primary">Start Game</button>
+                    <button id="submitBtn" class="game-btn success" style="display: none;">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Virtual Keypad -->
+    <button id="keypadToggle" class="keypad-toggle">123</button>
+    <div id="keypadContainer" class="keypad-container">
+        <div class="keypad-header">
+            <div class="keypad-title">Number Pad</div>
+            <button class="keypad-close" id="keypadClose">&times;</button>
+        </div>
+        <div class="keypad-grid">
+            <button class="keypad-btn" data-value="1">1</button>
+            <button class="keypad-btn" data-value="2">2</button>
+            <button class="keypad-btn" data-value="3">3</button>
+            <button class="keypad-btn delete" data-value="clear">Clear</button>
+            
+            <button class="keypad-btn" data-value="4">4</button>
+            <button class="keypad-btn" data-value="5">5</button>
+            <button class="keypad-btn" data-value="6">6</button>
+            <button class="keypad-btn" data-value="0">0</button>
+            
+            <button class="keypad-btn" data-value="7">7</button>
+            <button class="keypad-btn" data-value="8">8</button>
+            <button class="keypad-btn" data-value="9">9</button>
+            <button class="keypad-btn special" data-value=" ">Space</button>
+            
+            <button class="keypad-btn special" data-value="move">Move</button>
+            <button class="keypad-btn delete" data-value="delete">Del</button>
+            <button class="keypad-btn special" data-value="hide">Hide</button>
+            <button class="keypad-btn confirm" data-value="confirm">Enter</button>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        const gameState = {
+            mode: 'sequence',
+            numbersInSet: 5,
+            digitsPerNumber: 1,
+            displayTime: 2,
+            generationMethod: 'random',
+            theme: 'blue',
+            numbers: [],
+            score: 0,
+            level: 1,
+            tries: 0,
+            correctTries: 0,
+            isPlaying: false,
+            currentIndex: 0
+        };
+
+        // DOM Elements
+        const numberDisplay = document.getElementById('numberDisplay');
+        const numberInput = document.getElementById('numberInput');
+        const inputSection = document.getElementById('inputSection');
+        const startBtn = document.getElementById('startBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const scoreValue = document.getElementById('scoreValue');
+        const levelValue = document.getElementById('levelValue');
+        const triesValue = document.getElementById('triesValue');
+        const accuracyValue = document.getElementById('accuracyValue');
+        const toggleSettings = document.getElementById('toggleSettings');
+
+        // Settings inputs
+        const numbersInSetInput = document.getElementById('numbersInSet');
+        const numbersInSetValue = document.getElementById('numbersInSetValue');
+        const digitsPerNumberInput = document.getElementById('digitsPerNumber');
+        const digitsPerNumberValue = document.getElementById('digitsPerNumberValue');
+        const displayTimeInput = document.getElementById('displayTime');
+        const displayTimeValue = document.getElementById('displayTimeValue');
+        const generationMethodInput = document.getElementById('generationMethod');
+        const modeOptions = document.querySelectorAll('.mode-option');
+        const themeOptions = document.querySelectorAll('.theme-option');
+
+        // Event Listeners
+        startBtn.addEventListener('click', startGame);
+        submitBtn.addEventListener('click', checkAnswer);
+        numberInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+
+        // Add keyboard support for starting the game
+        document.addEventListener('keydown', function(e) {
+            // Only respond to keyboard shortcuts when not actively playing and not typing in input fields
+            if (!gameState.isPlaying && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'SELECT') {
+                if (e.key === 'Enter' || e.key === ' ' || e.code === 'Space') {
+                    e.preventDefault(); // Prevent scrolling on space
+                    startGame();
+                }
+            }
+        });
+
+        // Settings event listeners
+        toggleSettings.addEventListener('click', function() {
+            const settingsContent = document.querySelector('.settings-content');
+            settingsContent.classList.toggle('active');
+            this.textContent = settingsContent.classList.contains('active') ? 'Hide Settings' : 'Show Settings';
+        });
+
+        numbersInSetInput.addEventListener('input', function() {
+            gameState.numbersInSet = parseInt(this.value);
+            numbersInSetValue.textContent = this.value;
+        });
+
+        digitsPerNumberInput.addEventListener('input', function() {
+            gameState.digitsPerNumber = parseInt(this.value);
+            digitsPerNumberValue.textContent = this.value;
+        });
+
+        displayTimeInput.addEventListener('input', function() {
+            gameState.displayTime = parseFloat(this.value);
+            displayTimeValue.textContent = this.value;
+        });
+
+        generationMethodInput.addEventListener('change', function() {
+            gameState.generationMethod = this.value;
+        });
+
+        modeOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                modeOptions.forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+                gameState.mode = this.dataset.mode;
+            });
+        });
+
+        themeOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                themeOptions.forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+                applyTheme(this.dataset.theme);
+            });
+        });
+
+        // Game Functions
+        function startGame() {
+            if (gameState.isPlaying) return;
+            
+            gameState.isPlaying = true;
+            gameState.numbers = generateNumbers();
+            
+            startBtn.style.display = 'none';
+            numberDisplay.textContent = 'Memorize...';
+            
+            // Different display logic based on game mode
+            switch(gameState.mode) {
+                case 'sequence':
+                    displaySequence();
+                    break;
+                case 'flash':
+                    displayFlash();
+                    break;
+                case 'position':
+                    displayPosition();
+                    break;
+            }
+        }
+
+        function generateNumbers() {
+            const numbers = [];
+            
+            switch(gameState.generationMethod) {
+                case 'random':
+                    for (let i = 0; i < gameState.numbersInSet; i++) {
+                        let num = '';
+                        for (let j = 0; j < gameState.digitsPerNumber; j++) {
+                            num += Math.floor(Math.random() * 10);
+                        }
+                        numbers.push(parseInt(num));
+                    }
+                    break;
+                    
+                case 'sequential':
+                    let start = Math.floor(Math.random() * 90) + 10;
+                    for (let i = 0; i < gameState.numbersInSet; i++) {
+                        numbers.push(start + i);
+                    }
+                    break;
+                    
+                case 'pattern':
+                    let base = Math.floor(Math.random() * 5) + 2;
+                    for (let i = 0; i < gameState.numbersInSet; i++) {
+                        numbers.push(base * (i + 1));
+                    }
+                    break;
+            }
+            
+            return numbers;
+        }
+
+        function displaySequence() {
+            let index = 0;
+            
+            function showNextNumber() {
+                if (index < gameState.numbers.length) {
+                    numberDisplay.textContent = gameState.numbers[index];
+                    index++;
+                    setTimeout(showNextNumber, gameState.displayTime * 1000);
+                } else {
+                    promptForAnswer();
+                }
+            }
+            
+            showNextNumber();
+        }
+
+        function displayFlash() {
+            numberDisplay.textContent = gameState.numbers.join(' ');
+            
+            setTimeout(() => {
+                promptForAnswer();
+            }, gameState.displayTime * 1000);
+        }
+
+        function displayPosition() {
+            let positions = [];
+            let displayText = '';
+            
+            for (let i = 0; i < gameState.numbers.length; i++) {
+                let position = i + 1;
+                positions.push({ position, number: gameState.numbers[i] });
+                displayText += `Position ${position}: ${gameState.numbers[i]}<br>`;
+            }
+            
+            numberDisplay.innerHTML = displayText;
+            
+            setTimeout(() => {
+                numberDisplay.innerHTML = 'Enter the number at position: <strong>?</strong>';
+                gameState.currentIndex = Math.floor(Math.random() * gameState.numbers.length);
+                numberDisplay.innerHTML = `Enter the number at position: <strong>${gameState.currentIndex + 1}</strong>`;
+                promptForAnswer();
+            }, gameState.displayTime * 1000 * gameState.numbersInSet);
+        }
+
+        function promptForAnswer() {
+            if (gameState.mode === 'position') {
+                numberDisplay.innerHTML = `Enter the number at position: <strong>${gameState.currentIndex + 1}</strong>`;
+            } else {
+                numberDisplay.textContent = 'Enter the numbers (separated by spaces):';
+            }
+            
+            inputSection.style.display = 'block';
+            submitBtn.style.display = 'inline-block';
+            numberInput.focus();
+        }
+
+        function checkAnswer() {
+            gameState.tries++;
+            let isCorrect = false;
+            
+            switch(gameState.mode) {
+                case 'sequence':
+                case 'flash':
+                    let userAnswer;
+                    const input = numberInput.value.trim();
+                    
+                    // Check if input contains spaces (separated numbers)
+                    if (input.includes(' ')) {
+                        userAnswer = input.split(/\s+/).map(n => parseInt(n));
+                    } 
+                    // Check if input might be concatenated (no spaces)
+                    else if (input.length === gameState.numbers.length * gameState.digitsPerNumber) {
+                        // If all numbers have the same number of digits, split them accordingly
+                        if (gameState.digitsPerNumber === 1) {
+                            userAnswer = input.split('').map(n => parseInt(n));
+                        } else {
+                            userAnswer = [];
+                            for (let i = 0; i < input.length; i += gameState.digitsPerNumber) {
+                                userAnswer.push(parseInt(input.substring(i, i + gameState.digitsPerNumber)));
+                            }
+                        }
+                    }
+                    // Otherwise, treat as a general space-separated list
+                    else {
+                        userAnswer = input.split(/\s+/).map(n => parseInt(n));
+                    }
+                    
+                    isCorrect = arraysEqual(userAnswer, gameState.numbers);
+                    break;
+                    
+                case 'position':
+                    const userPositionAnswer = parseInt(numberInput.value.trim());
+                    isCorrect = userPositionAnswer === gameState.numbers[gameState.currentIndex];
+                    break;
+            }
+            
+            if (isCorrect) {
+                gameState.correctTries++;
+                gameState.score += calculateScore();
+                
+                if (gameState.correctTries % 3 === 0) {
+                    gameState.level++;
+                    levelUp();
+                }
+                
+                numberDisplay.textContent = 'Correct! Well done!';
+                numberDisplay.style.color = 'var(--success-color)';
+            } else {
+                numberDisplay.textContent = `Incorrect. The correct answer was: ${gameState.mode === 'position' ? gameState.numbers[gameState.currentIndex] : gameState.numbers.join(' ')}`;
+                numberDisplay.style.color = 'var(--danger-color)';
+            }
+            
+            updateStats();
+            
+            setTimeout(() => {
+                resetForNextRound();
+            }, 3000);
+        }
+
+        function calculateScore() {
+            // Base score is the number of digits correctly remembered
+            const baseScore = gameState.numbersInSet * gameState.digitsPerNumber;
+            
+            // Multipliers based on difficulty
+            const levelMultiplier = gameState.level;
+            const speedMultiplier = Math.max(1, 6 - gameState.displayTime); // Faster display = higher multiplier
+            
+            return baseScore * levelMultiplier * speedMultiplier;
+        }
+
+        function levelUp() {
+            // Increase difficulty based on current level
+            if (gameState.level % 2 === 0) {
+                gameState.numbersInSet = Math.min(15, gameState.numbersInSet + 1);
+                numbersInSetInput.value = gameState.numbersInSet;
+                numbersInSetValue.textContent = gameState.numbersInSet;
+            } else {
+                gameState.displayTime = Math.max(0.5, gameState.displayTime - 0.5);
+                displayTimeInput.value = gameState.displayTime;
+                displayTimeValue.textContent = gameState.displayTime;
+            }
+            
+            // Every 5 levels, increase digit complexity
+            if (gameState.level % 5 === 0) {
+                gameState.digitsPerNumber = Math.min(5, gameState.digitsPerNumber + 1);
+                digitsPerNumberInput.value = gameState.digitsPerNumber;
+                digitsPerNumberValue.textContent = gameState.digitsPerNumber;
+            }
+        }
+
+        function updateStats() {
+            scoreValue.textContent = gameState.score;
+            levelValue.textContent = gameState.level;
+            triesValue.textContent = gameState.tries;
+            
+            const accuracy = gameState.tries > 0 ? Math.round((gameState.correctTries / gameState.tries) * 100) : 0;
+            accuracyValue.textContent = `${accuracy}%`;
+        }
+
+        function resetForNextRound() {
+            numberDisplay.textContent = 'Ready for next round?';
+            numberDisplay.style.color = 'white';
+            inputSection.style.display = 'none';
+            submitBtn.style.display = 'none';
+            startBtn.style.display = 'inline-block';
+            numberInput.value = '';
+            gameState.isPlaying = false;
+        }
+
+        function arraysEqual(arr1, arr2) {
+            if (arr1.length !== arr2.length) return false;
+            for (let i = 0; i < arr1.length; i++) {
+                if (arr1[i] !== arr2[i]) return false;
+            }
+            return true;
+        }
+
+        function applyTheme(theme) {
+            gameState.theme = theme;
+            const root = document.documentElement;
+            
+            switch(theme) {
+                case 'blue':
+                    root.style.setProperty('--primary-color', '#4e54c8');
+                    root.style.setProperty('--secondary-color', '#8f94fb');
+                    break;
+                case 'green':
+                    root.style.setProperty('--primary-color', '#11998e');
+                    root.style.setProperty('--secondary-color', '#38ef7d');
+                    break;
+                case 'purple':
+                    root.style.setProperty('--primary-color', '#8e2de2');
+                    root.style.setProperty('--secondary-color', '#4a00e0');
+                    break;
+                case 'dark':
+                    root.style.setProperty('--primary-color', '#232526');
+                    root.style.setProperty('--secondary-color', '#414345');
+                    break;
+            }
+        }
+
+        // Initialize the game
+        updateStats();
+
+        // Virtual Keypad Functionality
+        const keypadToggle = document.getElementById('keypadToggle');
+        const keypadContainer = document.getElementById('keypadContainer');
+        const keypadClose = document.getElementById('keypadClose');
+        const keypadButtons = document.querySelectorAll('.keypad-btn');
+        
+        let isDragging = false;
+        let dragStartX, dragStartY, initialX, initialY;
+        let currentX = 0;
+        let currentY = 0;
+
+        // Toggle keypad visibility
+        keypadToggle.addEventListener('click', function() {
+            keypadContainer.classList.toggle('active');
+            if (keypadContainer.classList.contains('active')) {
+                keypadToggle.style.display = 'none';
+            }
+        });
+
+        keypadClose.addEventListener('click', function() {
+            keypadContainer.classList.remove('active');
+            keypadToggle.style.display = 'flex';
+        });
+
+        // Make keypad draggable
+        keypadContainer.addEventListener('mousedown', dragStart);
+        keypadContainer.addEventListener('touchstart', dragStart, { passive: false });
+
+        document.addEventListener('mouseup', dragEnd);
+        document.addEventListener('touchend', dragEnd);
+
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('touchmove', drag, { passive: false });
+
+        function dragStart(e) {
+            if (e.target.classList.contains('keypad-btn') || e.target.classList.contains('keypad-close')) {
+                return;
+            }
+            
+            e.preventDefault();
+            
+            if (e.type === 'touchstart') {
+                dragStartX = e.touches[0].clientX;
+                dragStartY = e.touches[0].clientY;
+            } else {
+                dragStartX = e.clientX;
+                dragStartY = e.clientY;
+            }
+            
+            initialX = currentX;
+            initialY = currentY;
+            
+            isDragging = true;
+        }
+
+        function drag(e) {
+            if (!isDragging) return;
+            
+            e.preventDefault();
+            
+            let currentDragX, currentDragY;
+            
+            if (e.type === 'touchmove') {
+                currentDragX = e.touches[0].clientX;
+                currentDragY = e.touches[0].clientY;
+            } else {
+                currentDragX = e.clientX;
+                currentDragY = e.clientY;
+            }
+            
+            const deltaX = currentDragX - dragStartX;
+            const deltaY = currentDragY - dragStartY;
+            
+            currentX = initialX + deltaX;
+            currentY = initialY + deltaY;
+            
+            keypadContainer.style.transform = `translate(${currentX}px, ${currentY}px)`;
+        }
+
+        function dragEnd() {
+            isDragging = false;
+        }
+
+        // Handle keypad button clicks
+        keypadButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const value = this.getAttribute('data-value');
+                
+                // Handle special buttons
+                switch(value) {
+                    case 'clear':
+                        numberInput.value = '';
+                        break;
+                    case 'delete':
+                        numberInput.value = numberInput.value.slice(0, -1);
+                        break;
+                    case 'confirm':
+                        if (submitBtn.style.display !== 'none') {
+                            checkAnswer();
+                        }
+                        break;
+                    case 'hide':
+                        keypadContainer.classList.remove('active');
+                        keypadToggle.style.display = 'flex';
+                        break;
+                    case 'move':
+                        // Already handled by drag functionality
+                        break;
+                    default:
+                        // For numbers and space
+                        if (inputSection.style.display !== 'none') {
+                            numberInput.value += value;
+                            numberInput.focus();
+                        }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
