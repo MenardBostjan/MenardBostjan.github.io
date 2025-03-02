@@ -1,224 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Webpage with Dynamic Background</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
-        }
-
-        body {
-            line-height: 1.6;
-            color: #333;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #6e8efb, #a777e3);
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
-        }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        header {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            text-align: center;
-            padding: 2rem;
-            backdrop-filter: blur(10px);
-        }
-
-        nav {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 1rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            backdrop-filter: blur(10px);
-        }
-
-        nav ul {
-            list-style: none;
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: white;
-            font-weight: bold;
-            padding: 0.5rem 1rem;
-            border-radius: 25px;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        nav a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: white;
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-
-        nav a:hover::after {
-            transform: scaleX(1);
-        }
-
-        nav a:hover {
-            color: #ffe600;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            min-height: calc(100vh - 300px);
-        }
-
-        .card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 20px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
-        }
-
-        footer {
-            text-align: center;
-            padding: 1rem;
-            background: rgba(0, 0, 0, 0.1);
-            color: white;
-            width: 100%;
-        }
-
-        #ascii-output {
-            font-family: monospace;
-            white-space: pre;
-            font-size: 8px; /* Adjust for desired density */
-            line-height: 6px; /* Adjust for desired density */
-        }
-    </style>
+    <title>Gemini Chat & 4 in a Row</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>Welcome to Randomness</h1>
-        <p>A modern webpage with some fun content</p>
-    </header>
 
-    <nav>
-        <ul>
-            <li><a href="#home">Home</a></li>
-            <li><a href="#stuff">Stuff</a></li>
-            <li><a href="#more">More</a></li>
-        </ul>
-    </nav>
-
-    <div class="container">
-        <div class="card">
-            <h2>Random Fact #1</h2>
-            <p>A group of flamingos is called a "flamboyance."</p>
-        </div>
-        <div class="card">
-            <h2>Random Quote</h2>
-            <p>"The universe is under no obligation to make sense to you." - Neil deGrasse Tyson</p>
-        </div>
-        <div class="card">
-            <h2>Random Idea</h2>
-            <p>What if clouds were actually cotton candy floating in the sky?</p>
-        </div>
-        <div class="card">
-            <h2>Random Fact #2</h2>
-            <p>Octopuses have three hearts and can change color to blend into their surroundings.</p>
-        </div>
-        <div class="card">
-            <h2>Random Thought</h2>
-            <p>Why do we park in driveways and drive on parkways?</p>
-        </div>
-        <div class="card">
-            <h2>ASCII Art</h2>
-            <input type="file" id="image-input" accept="image/*">
-            <button id="convert-button">Convert to ASCII</button>
-            <div id="ascii-output"></div>
+    <div id="game-container">
+        <div id="game-board">
+            <!-- Game board cells will be generated here by JavaScript -->
         </div>
     </div>
 
-    <footer>
-        <p>© 2025 Random Page. All rights reserved.</p>
-    </footer>
+    <div id="chat-window" class="chat-floating">
+        <div id="chat-header">Gemini Chat</div>
+        <div id="chat-display">
+            <!-- Chat messages will be displayed here -->
+        </div>
+        <div id="chat-input-area">
+            <button id="new-game-button">New Game</button>
+            <textarea id="message-input" placeholder="Type your chat message to Gemini..."></textarea>
+            <button id="send-button">Send</button>
+        </div>
+    </div>
 
-    <script>
-        const imageInput = document.getElementById('image-input');
-        const convertButton = document.getElementById('convert-button');
-        const asciiOutput = document.getElementById('ascii-output');
-
-        convertButton.addEventListener('click', () => {
-    const file = imageInput.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            const img = new Image();
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                canvas.width = img.width;
-                canvas.height = img.height;
-                ctx.drawImage(img, 0, 0);
-
-                const imageData = ctx.getImageData(0, 0, img.width, img.height);
-                const ascii = convertToASCII(imageData);
-
-                // Open a new window and display the ASCII art
-                const newWindow = window.open('', '_blank');
-                newWindow.document.write('<pre>' + ascii + '</pre>');
-                newWindow.document.close();
-            };
-            img.src = event.target.result;
-        };
-        reader.readAsDataURL(file);
-    } else {
-        alert('Please select an image.');
-    }
-});
-
-        function convertToASCII(imageData) {
-            const { data, width, height } = imageData;
-            const asciiChars = '@%#*+=-:. '; // Adjust characters for desired contrast
-            const asciiCharsLength = asciiChars.length;
-            let ascii = '';
-
-            for (let y = 0; y < height; y += 2) { // Adjust step for density
-                for (let x = 0; x < width; x += 1) { // Adjust step for density
-                    const red = data[(y * width + x) * 4];
-                    const green = data[(y * width + x) * 4 + 1];
-                    const blue = data[(y * width + x) * 4 + 2];
-                    const brightness = (red + green + blue) / 3;
-
-                    const charIndex = Math.floor((brightness / 255) * (asciiCharsLength - 1));
-                    ascii += asciiChars[charIndex];
-                }
-                ascii += '\n';
-            }
-            return ascii;
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
