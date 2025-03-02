@@ -1,0 +1,168 @@
+/* style.css - UPDATED for Separate Game Board and Fixed Layout */
+
+body {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    height: 100vh;
+    margin: 0;
+    font-family: sans-serif;
+}
+
+#game-container {
+    margin-left: 20px;
+    margin-top: 20px;
+    width: 400px; /* Fixed width for game container */
+    height: 400px; /* Fixed height for game container */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+#game-board {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    border: 2px solid #333;
+    grid-template-columns: repeat(10, 1fr); /* Explicitly define 10 columns */
+    grid-template-rows: repeat(10, 1fr);    /* Explicitly define 10 rows */
+}
+
+.game-cell {
+    border: 1px solid #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5em;
+    cursor: pointer;
+    user-select: none;
+    width: auto;        /* Ensure cell width is determined by grid */
+    height: auto;       /* Ensure cell height is determined by grid */
+    box-sizing: border-box; /* Include border in cell dimensions */
+    flex-basis: 0;      /* Prevent flex basis from interfering with grid sizing */
+}
+
+
+.game-cell:hover {
+    background-color: #f0f0f0;
+}
+
+.user-piece {
+    color: blue;
+    font-weight: bold;
+}
+
+.gemini-piece {
+    color: red;
+    font-weight: bold;
+}
+
+#game-board.disabled {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+
+/* ---------------- Chat Window Styles (Fixed Right Side) ---------------- */
+
+.chat-floating {
+    position: fixed;      /* Fixed positioning for right side */
+    top: 0;               /* Stick to the top */
+    right: 0;             /* Stick to the right */
+    width: 25vw;          /* 1/4 of viewport width */
+    height: 100vh;         /* Full viewport height */
+    max-width: 400px;     /* Optional: Maximum width */
+    min-width: 300px;     /* Optional: Minimum width */
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid #ccc; /* Visual separator from game */
+    box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1); /* Shadow to left */
+    background-color: #f9f9f9;
+    z-index: 1000;
+}
+
+#chat-header {
+    padding: 10px;
+    background-color: #eee;
+    border-bottom: 1px solid #ccc;
+    border-top-left-radius: 0;    /* Square top-left corner */
+    border-top-right-radius: 0;   /* Square top-right corner */
+    border-bottom-left-radius: 8px; /* Keep rounded bottom corners */
+    border-bottom-right-radius: 8px;
+    font-weight: bold;
+    text-align: center;
+}
+
+#chat-display {
+    flex-grow: 1;
+    padding: 10px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.message {
+    padding: 8px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    word-wrap: break-word;
+}
+
+.user-message {
+    background-color: #e0f7fa;
+    align-self: flex-end;
+}
+
+.gemini-message {
+    background-color: #f0f4c3;
+    align-self: flex-start;
+}
+
+#chat-input-area {
+    padding: 10px;
+    border-top: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+}
+
+#new-game-button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    background-color: #2196F3;
+    color: white;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+#new-game-button:hover {
+    background-color: #1976D2;
+}
+
+
+#message-input {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: none;
+    margin-left: 10px;
+}
+
+#send-button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+#send-button:hover {
+    background-color: #45a049;
+}
