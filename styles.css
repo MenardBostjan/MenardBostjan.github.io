@@ -1,141 +1,168 @@
+/* style.css - UPDATED for Separate Game Board and Fixed Layout */
+
 body {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-start;
+    align-items: flex-start;
     height: 100vh;
     margin: 0;
-    background-color: #f0f0f0;
     font-family: sans-serif;
 }
 
-.roulette-table {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
-    gap: 2px;
-    width: 80%;
-    max-width: 1000px;
-    background-color: white;
-    border: 2px solid blue;
-    padding: 5px;
-}
-
-.outside-bet.top {
-    grid-column: 1 / 8;
-    grid-row: 1;
-    border: 1px solid blue;
-    position: relative;
-}
-
-.outside-bet.top:nth-child(2) {
-    grid-column: 8 / 14;
-}
-
-.zero {
-    grid-column: 7 / 9;
-    grid-row: 2;
-    background-color: green;
-    color: white;
-    position: relative;
-    clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
-}
-
-.number-grid {
-    grid-column: 2 / 14;
-    grid-row: 3 / 5;
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    gap: 1px;
-}
-
-.number {
-    border: 1px solid black;
-    position: relative;
+#game-container {
+    margin-left: 20px;
+    margin-top: 20px;
+    width: 400px; /* Fixed width for game container */
+    height: 400px; /* Fixed height for game container */
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.number.red {
-    background-color: red;
-    color: white;
+
+#game-board {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    border: 2px solid #333;
+    grid-template-columns: repeat(10, 1fr); /* Explicitly define 10 columns */
+    grid-template-rows: repeat(10, 1fr);    /* Explicitly define 10 rows */
 }
 
-.number.black {
-    background-color: black;
-    color: white;
+.game-cell {
+    border: 1px solid #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5em;
+    cursor: pointer;
+    user-select: none;
+    width: auto;        /* Ensure cell width is determined by grid */
+    height: auto;       /* Ensure cell height is determined by grid */
+    box-sizing: border-box; /* Include border in cell dimensions */
+    flex-basis: 0;      /* Prevent flex basis from interfering with grid sizing */
 }
 
-.outside-bet.bottom {
-    grid-column: 1 / 6;
-    grid-row: 5;
-    border: 1px solid blue;
-    position: relative;
+
+.game-cell:hover {
+    background-color: #f0f0f0;
 }
 
-.outside-bet.bottom:nth-child(2) {
-    grid-column: 6 / 10;
+.user-piece {
+    color: blue;
+    font-weight: bold;
 }
 
-.outside-bet.bottom:nth-child(3) {
-    grid-column: 10 / 14;
+.gemini-piece {
+    color: red;
+    font-weight: bold;
 }
 
-.dozen-bet {
-    grid-column: 14 / 15;
-    grid-row: 2 / 3;
-    border: 1px solid blue;
-    position: relative;
+#game-board.disabled {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+
+/* ---------------- Chat Window Styles (Fixed Right Side) ---------------- */
+
+.chat-floating {
+    position: fixed;      /* Fixed positioning for right side */
+    top: 0;               /* Stick to the top */
+    right: 0;             /* Stick to the right */
+    width: 25vw;          /* 1/4 of viewport width */
+    height: 100vh;         /* Full viewport height */
+    max-width: 400px;     /* Optional: Maximum width */
+    min-width: 300px;     /* Optional: Minimum width */
     display: flex;
     flex-direction: column;
+    border-left: 1px solid #ccc; /* Visual separator from game */
+    box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1); /* Shadow to left */
+    background-color: #f9f9f9;
+    z-index: 1000;
+}
+
+#chat-header {
+    padding: 10px;
+    background-color: #eee;
+    border-bottom: 1px solid #ccc;
+    border-top-left-radius: 0;    /* Square top-left corner */
+    border-top-right-radius: 0;   /* Square top-right corner */
+    border-bottom-left-radius: 8px; /* Keep rounded bottom corners */
+    border-bottom-right-radius: 8px;
+    font-weight: bold;
+    text-align: center;
+}
+
+#chat-display {
+    flex-grow: 1;
+    padding: 10px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.message {
+    padding: 8px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    word-wrap: break-word;
+}
+
+.user-message {
+    background-color: #e0f7fa;
+    align-self: flex-end;
+}
+
+.gemini-message {
+    background-color: #f0f4c3;
+    align-self: flex-start;
+}
+
+#chat-input-area {
+    padding: 10px;
+    border-top: 1px solid #ccc;
+    display: flex;
     align-items: center;
 }
 
-.dozen-bet:nth-child(2) {
-    grid-row: 3 / 4;
+#new-game-button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    background-color: #2196F3;
+    color: white;
+    cursor: pointer;
+    margin-right: 10px;
 }
 
-.dozen-bet:nth-child(3) {
-    grid-row: 4 / 5;
+#new-game-button:hover {
+    background-color: #1976D2;
 }
 
-.diamond {
-    width: 20px;
-    height: 20px;
-    transform: rotate(45deg);
-    margin: 5px;
+
+#message-input {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: none;
+    margin-left: 10px;
 }
 
-.red-diamond {
-    background-color: red;
+#send-button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    margin-left: 10px;
 }
 
-.black-diamond {
-    background-color: black;
-}
-
-.field-label {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 14px;
-    text-transform: uppercase;
-}
-
-.probability {
-    position: absolute;
-    bottom: 2px;
-    left: 2px;
-    font-size: 10px;
-    color: black;
-}
-
-.hit-count {
-    position: absolute;
-    bottom: 2px;
-    right: 2px;
-    font-size: 10px;
-    color: black;
+#send-button:hover {
+    background-color: #45a049;
 }
