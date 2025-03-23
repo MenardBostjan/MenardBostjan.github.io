@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comic Book Viewer</title>
+    <style>
+        body {
+            font-family: sans-serif; /* Fallback font */
+            margin: 0;
+            background-color: #f0f0f0; /* Light background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .comic-container {
+            text-align: center;
+            position: relative;
+            width: 100%; /* Ensure the container takes up the full width */
+        }
+
+        /* Wrapper for vertical centering */
+        .image-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-height: 80vh;  /* Limit height of wrapper, not the image itself */
+            position: relative; /*  For absolute positioning of caption */
+        }
+
+        #comic-page {
+            max-width: 90%;
+            max-height: 100%; /* Use 100% of wrapper's height */
+            border: 2px solid black;
+            box-sizing: border-box;
+            display: none; /* Initially hidden */
+        }
+        .navigation {
+            display: none; /* Initially hidden */
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .nav-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 0 10px;
+            border: 1px solid black;
+            background-color: #ddd;
+            border-radius: 5px;
+        }
+
+        .nav-button:hover {
+            background-color: #ccc;
+        }
+         /* Caption Styling */
+        .caption {
+            position: absolute;
+            bottom: 10%; /* Position at the bottom */
+            left: 50%;  /* Center horizontally */
+            transform: translateX(-50%); /*  For perfect centering */
+            width: 95%;  /* 80% of image width */
+            max-height: 35%; /* 20% of image height, adjust as needed */
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
+            padding: 10px;
+            border: 1px solid black;
+            box-sizing: border-box;
+            overflow-y: auto; /*  Handle long captions with scrollbar */
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            font-size: 1rem; /* Responsive font size */
+            color: black;
+            text-align: center;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .image-wrapper{
+                 max-height: 70vh;
+            }
+            #comic-page {
+                max-width: 95%;
+            }
+
+            .nav-button {
+                padding: 8px 15px;
+                font-size: 14px;
+                margin: 0 5px;
+            }
+           .caption {
+               font-size: 0.8rem; /* Smaller font on smaller screens */
+               max-height: 25%;
+           }
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="comic-container" id="comicContainer">
+        <div class="image-wrapper">
+            <img id="comic-page" src="" alt="Comic Page">
+             <div class="caption"></div>
+        </div>
+        <div class="navigation" id="navigation">
+            <button class="nav-button" id="prevBtn">Previous</button>
+            <button class="nav-button" id="nextBtn">Next</button>
+        </div>
+    </div>
+
+    <script>
+        const comicPage = document.getElementById('comic-page');
+        const navigation = document.getElementById('navigation');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const comicContainer = document.getElementById('comicContainer');
+        const caption = document.querySelector('.caption'); // Get the caption element
+        let imageList = [];
+        let currentIndex = 0;
+        let navigationVisible = false;
+
+        // Function to load image filenames and captions from the text file
+        async function loadImageList() {
+            try {
+                const response = await fetch('comic_pages.txt');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const text = await response.text();
+                imageList = text.trim().split('\n')
+                    .map(line => line.trim())
+                    .filter(line => line !== '')
+                    .map(line => {
+                        const parts = line.split('@'); // Split by the @ symbol
+                        return {
+                            filename: parts[0].trim(),  // First part is the filename, trim spaces
+                            caption: parts[1] ? parts[1].trim() : '' // Second part is the caption, handle missing
+                        };
+                    });
+
+                if (imageList.length > 0) {
+                    showPage(0); // Show the first page initially
+                } else {
+                    comicPage.alt = 'No comic pages found in comic_pages.txt';
+                    comicPage.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Could not load image list:', error);
+                comicPage.alt = 'Error loading comic page list.';
+                comicPage.style.display = 'block';
+            }
+        }
+
+        function showPage(index) {
+            if (index >= 0 && index < imageList.length) {
+                comicPage.src = imageList[(currentIndex = index)].filename;
+                comicPage.style.display = 'block';
+                caption.textContent = imageList[currentIndex].caption; // Set the caption text
+            } else if (imageList.length > 0) {
+                // Optionally handle reaching the end/beginning (e.g., loop around)
+                console.log('Reached the end/beginning of the comic.');
+            }
+            updateNavigationVisibility();
+        }
+
+        function nextPage() {
+            showPage(currentIndex + 1);
+        }
+
+        function prevPage() {
+            showPage(currentIndex - 1);
+        }
+
+        function updateNavigationVisibility() {
+            if (!navigationVisible && imageList.length > 0) {
+                navigation.style.display = 'block';
+                navigationVisible = true;
+            }
+            prevBtn.disabled = currentIndex === 0;
+            nextBtn.disabled = currentIndex === imageList.length - 1;
+        }
+
+        // Event listener to show navigation on first click
+        comicContainer.addEventListener('click', () => {
+            updateNavigationVisibility();
+            comicContainer.removeEventListener('click', arguments.callee); // Remove the listener after the first click
+        });
+
+        prevBtn.addEventListener('click', prevPage);
+        nextBtn.addEventListener('click', nextPage);
+
+        // Load the image list when the page loads
+        loadImageList();
+    </script>
+</body>
+</html>
