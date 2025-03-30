@@ -9,28 +9,26 @@
     <style>
         /* Custom styles for the chat container and messages */
         .chat-container {
-            margin: 7; /* Remove default margin */
-            padding: 7;  /* Remove default padding */
-            height: 98vh; /* Make it full height */
-            width: 98vw; /* Make it full width */
+            margin: 7;
+            padding: 7;
+            height: 98vh;
+            width: 98vw;
             display: flex;
             flex-direction: column;
-            border-radius: 5; /* No border radius for full screen */
+            border-radius: 5;
             background-color: white;
-            box-shadow: none; /* Remove shadow */
+            box-shadow: none;
             overflow: hidden;
         }
         .chat-messages {
             flex-grow: 1;
             overflow-y: auto;
             padding-bottom: 1rem;
-            /*smooth scroll*/
             scroll-behavior: smooth;
         }
         .message {
             display: flex;
             margin-bottom: 1.5rem;
-            /*animate message*/
             animation: fadeIn 0.5s ease-in-out;
         }
         @keyframes fadeIn {
@@ -48,7 +46,6 @@
             border-radius: 1.5rem;
             max-width: 85%;
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
-            /* Improve typography */
             font-family: 'Google Sans', sans-serif;
             font-size: 1.1rem;
             line-height: 1.6;
@@ -56,7 +53,6 @@
             white-space: pre-wrap;
             word-wrap: break-word;
         }
-
         .message-content:hover {
             transform: translateY(-2px);
             box-shadow: 0 9px 18px rgba(0, 0, 0, 0.15);
@@ -81,6 +77,7 @@
         }
         .input-container {
             display: flex;
+            flex-direction: column;
             align-items: center;
             padding-top: 1.5rem;
             border-top: 1px solid #e0e0e0;
@@ -90,9 +87,12 @@
             padding: 1.25rem;
             border-radius: 1rem;
             border: 1px solid #cfd8dc;
-            margin-right: 1rem;
+            margin-right: 0;
+            margin-bottom: 1rem;
             font-size: 1rem;
             transition: border-color 0.3s ease;
+            width: 90VW; /* Changed width to 90% */
+            /*max-width: 400px;*/
         }
         .input-field:focus {
             outline: none;
@@ -100,15 +100,18 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .send-button {
-            padding: 1rem 2rem;
+            padding: 1.5rem 3rem;
             border-radius: 0.75rem;
             background-color: #4fc3f7;
             color: white;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.2s ease;
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
             border: none;
+            margin-top: 1rem;
+            width: 95VW;
+            /*width: fit-content;*/
         }
         .send-button:hover {
             background-color: #4dd0e1;
@@ -145,6 +148,10 @@
                 height: 95vh;
                 width: 95vw;
             }
+            .input-field {
+                width: 90%; /* Changed width to 90% */
+                max-width: 300px;
+            }
         }
         /* Media query for tablets */
         @media (min-width: 769px) and (max-width: 1024px) {
@@ -153,17 +160,21 @@
                 height: 98vh;
                 width: 98vw;
             }
+             .input-field {
+                width: 90%; /* Changed width to 90% */
+                max-width: 350px;
+            }
         }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-100 to-purple-100 min-h-screen flex items-center justify-center font-sans">
     <div class="chat-container">
         <div class="chat-messages" id="chat-messages">
-            <div class="system-message">Pozdravljeni v Gemini Chatbotu! Kako vam lahko danes pomagam?</div>
+            <div class="system-message">Servus! Kak ti lahko danes pomagam?</div>
         </div>
         <div class="input-container">
-            <input type="text" id="input-field" class="input-field" placeholder="Vnesite vaše sporočilo...">
-            <button id="send-button" class="send-button">Pošlji</button>
+            <input type="text" id="input-field" class="input-field" placeholder="Napisi nekaj...">
+            <button id="send-button" class="send-button">Da vidim kaj bo reko...</button>
         </div>
         <div class="error-message" id="error-message"></div>
     </div>
