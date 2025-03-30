@@ -9,15 +9,15 @@
     <style>
         /* Custom styles for the chat container and messages */
         .chat-container {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 2rem;
-            border-radius: 1rem;
-            background-color: white;
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+            margin: 0; /* Remove default margin */
+            padding: 0;  /* Remove default padding */
+            height: 100vh; /* Make it full height */
+            width: 100vw; /* Make it full width */
             display: flex;
             flex-direction: column;
-            height: calc(100vh - 4rem);
+            border-radius: 0; /* No border radius for full screen */
+            background-color: white;
+            box-shadow: none; /* Remove shadow */
             overflow: hidden;
         }
         .chat-messages {
@@ -137,6 +137,23 @@
             font-size: 1rem;
             font-weight: 500;
         }
+
+        /* Media query for mobile devices */
+        @media (max-width: 768px) {
+            .chat-container {
+                border-radius: 0;
+                height: 100vh;
+                width: 100vw;
+            }
+        }
+        /* Media query for tablets */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .chat-container{
+                border-radius: 0;
+                height: 100vh;
+                width: 100vw;
+            }
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-100 to-purple-100 min-h-screen flex items-center justify-center font-sans">
@@ -241,10 +258,11 @@
                     let i = 0;
                     const replyElement = createMessageElement('', 'receiver');
                     chatMessages.appendChild(replyElement);
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                    let formattedReply = '';
                     const typingInterval = setInterval(() => {
                         if (i < geminiResponse.length) {
-                            replyElement.querySelector('.message-content').innerHTML += geminiResponse.charAt(i); // Use innerHTML here too
+                            formattedReply += geminiResponse.charAt(i);
+                            replyElement.querySelector('.message-content').innerHTML = formattedReply; // Use innerHTML here
                             i++;
                             chatMessages.scrollTop = chatMessages.scrollHeight;
                         } else {
