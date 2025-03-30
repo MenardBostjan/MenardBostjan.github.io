@@ -9,22 +9,23 @@
     <style>
         /* Custom styles for the chat container and messages */
         .chat-container {
-            margin: 7;
-            padding: 7;
-            height: 98vh;
-            width: 98vw;
             display: flex;
             flex-direction: column;
-            border-radius: 5;
+            border-radius: 0;
             background-color: white;
             box-shadow: none;
             overflow: hidden;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
         }
         .chat-messages {
             flex-grow: 1;
             overflow-y: auto;
             padding-bottom: 1rem;
             scroll-behavior: smooth;
+            padding-left: 1rem;
+            padding-right: 1rem;
         }
         .message {
             display: flex;
@@ -42,127 +43,160 @@
             }
         }
         .message-content {
-            padding: 1.25rem;
+            padding: 1rem;
             border-radius: 1.5rem;
-            max-width: 85%;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+            max-width: 90%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
             font-family: 'Google Sans', sans-serif;
-            font-size: 1.1rem;
-            line-height: 1.6;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            font-size: 1rem;
+            line-height: 1.4;
             white-space: pre-wrap;
             word-wrap: break-word;
+            background-color: #edf2f7;
+            color: #1a202c;
         }
-        .message-content:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 9px 18px rgba(0, 0, 0, 0.15);
-        }
-        .sender {
-            justify-content: flex-end;
-        }
-        .sender .message-content {
+        .message-content.sender {
             background-color: #e0f7fa;
             color: #00897b;
             border-top-right-radius: 0.25rem;
             border-bottom-right-radius: 0.25rem;
+            border-top-left-radius: 1.5rem;
+            border-bottom-left-radius: 1.5rem;
         }
-        .receiver {
-            justify-content: flex-start;
-        }
-        .receiver .message-content {
+        .message-content.receiver {
             background-color: #f5f5f5;
-            color: #424242;
+            color: #4a5568;
             border-top-left-radius: 0.25rem;
             border-bottom-left-radius: 0.25rem;
+            border-top-right-radius: 1.5rem;
+            border-bottom-right-radius: 1.5rem;
         }
         .input-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-top: 1.5rem;
-            border-top: 1px solid #e0e0e0;
+            padding-top: 1rem;
+            border-top: 1px solid #e2e8f0;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            padding-bottom: 1rem;
         }
         .input-field {
             flex-grow: 1;
-            padding: 1.25rem;
-            border-radius: 1rem;
-            border: 1px solid #cfd8dc;
-            margin-right: 0;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            border: 1px solid #e2e8f0;
             margin-bottom: 1rem;
             font-size: 1rem;
-            transition: border-color 0.3s ease;
-            width: 90VW; /* Changed width to 90% */
-            /*max-width: 400px;*/
+            transition: border-color 0.2s ease;
+            width: 100%;
+            max-width: 400px;
         }
         .input-field:focus {
             outline: none;
             border-color: #4fc3f7;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
         }
         .send-button {
-            padding: 1.5rem 3rem;
+            padding: 0.75rem 1.5rem;
             border-radius: 0.75rem;
             background-color: #4fc3f7;
             color: white;
-            font-size: 1.2rem;
+            font-size: 1rem;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             border: none;
-            margin-top: 1rem;
-            width: 95VW;
-            /*width: fit-content;*/
+            width: fit-content;
         }
         .send-button:hover {
             background-color: #4dd0e1;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1);
         }
         .send-button:active {
             background-color: #4db6ac;
             transform: translateY(0);
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .system-message {
             text-align: center;
             font-style: italic;
-            color: #90a4ae;
+            color: #a0aec0;
             margin-bottom: 1.5rem;
             padding: 0.75rem;
-            background-color: #f0f4c3;
+            background-color: #f7fafc;
             border-radius: 0.75rem;
-            border: 1px solid #e6ee96;
+            border: 1px solid #e2e8f0;
+            font-size: 0.9rem;
         }
         .error-message {
-            color: #ff5252;
+            color: #e53e3e;
             text-align: center;
             margin-top: 1rem;
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 500;
         }
-
-        /* Media query for mobile devices */
-        @media (max-width: 768px) {
+        /* Responsive adjustments */
+        @media (max-width: 768px) {  /* Mobile devices */
             .chat-container {
                 border-radius: 0;
-                height: 95vh;
-                width: 95vw;
+                height: 100vh;
+                width: 100vw;
+                margin: 0;
+                padding: 0;
+            }
+            .input-container {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+            }
+            .chat-messages {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
             }
             .input-field {
-                width: 90%; /* Changed width to 90% */
+                width: 100%;
+                max-width: 100%;
+                border-radius: 0.5rem;
+            }
+            .send-button {
+                width: 100%;
                 max-width: 300px;
+                border-radius: 0.5rem;
+            }
+            .message-content{
+               font-size: 0.95rem;
             }
         }
-        /* Media query for tablets */
-        @media (min-width: 769px) and (max-width: 1024px) {
-            .chat-container{
-                border-radius: 0;
-                height: 98vh;
+        @media (min-width: 769px) and (max-width: 1024px) {  /* Tablets */
+            .chat-container {
+                border-radius: 0.75rem;
+                height: 100vh;
                 width: 98vw;
+                margin: auto;
             }
-             .input-field {
-                width: 90%; /* Changed width to 90% */
-                max-width: 350px;
+            .input-field {
+                width: 100%;
+                max-width: 500px;
+            }
+            .send-button{
+                width: fit-content;
+            }
+        }
+        @media (min-width: 1025px) {  /* Desktops */
+            .chat-container {
+                border-radius: 1rem;
+                height: 90vh;
+                width: 80vw;
+                max-width: 800px;
+                margin: auto;
+            }
+            .input-field {
+                width: 100%;
+                max-width: 600px;
+            }
+            .send-button {
+                width: fit-content;
             }
         }
     </style>
@@ -187,10 +221,10 @@
         // Function to create a message element
         function createMessageElement(text, sender) {
             const messageElement = document.createElement('div');
-            messageElement.classList.add('message', sender);
+            messageElement.classList.add('message');
             const messageContent = document.createElement('div');
-            messageContent.classList.add('message-content');
-            messageContent.innerHTML = text; // Use innerHTML to render HTML
+            messageContent.classList.add('message-content', sender); // Add sender class
+            messageContent.innerHTML = text;
             messageElement.appendChild(messageContent);
             return messageElement;
         }
@@ -255,7 +289,7 @@
                 throw error;
             }
         }
-
+        
         // Event listener for the send button
         sendButton.addEventListener('click', async () => {
             const message = inputField.value;
@@ -273,7 +307,7 @@
                     const typingInterval = setInterval(() => {
                         if (i < geminiResponse.length) {
                             formattedReply += geminiResponse.charAt(i);
-                            replyElement.querySelector('.message-content').innerHTML = formattedReply; // Use innerHTML here
+                            replyElement.querySelector('.message-content').innerHTML = formattedReply;
                             i++;
                             chatMessages.scrollTop = chatMessages.scrollHeight;
                         } else {
@@ -286,7 +320,6 @@
                 }
             }
         });
-
         // Event listener for the input field (Enter key)
         inputField.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
