@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glowing Runner</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #111;
+            font-family: 'Press Start 2P', cursive;
+            overflow: hidden; /* Prevent scrollbars */
+        }
+
+        .container {
+            text-align: center;
+            width: 100%;
+            max-width: 600px; /* Adjust as needed */
+            box-sizing: border-box;
+        }
+
+        #gameCanvas {
+            background: rgba(0, 0, 0, 0.8); /* Slightly transparent background */
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5); /* Stronger glow */
+            width: 100%; /* Responsive width */
+            height: auto;
+            max-height: 80vh; /* Max height to maintain aspect ratio and prevent overflow*/
+            aspect-ratio: 3/4;
+        }
+
+        #startButton, #muteButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            background: linear-gradient(135deg, #6e8efb, #a777e3); /* Gradient background */
+            color: white;
+            border: none;
+            border-radius: 25px; /* Fully rounded corners */
+            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1); /* Softer shadow */
+            transition: all 0.3s ease 0s;
+            font-family: 'Press Start 2P', cursive;
+            outline: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 150px; /* Fixed width for buttons */
+        }
+
+        #startButton:hover {
+            background: linear-gradient(135deg, #4364f7, #6200ea); /* Darker gradient on hover */
+            box-shadow: 0px 15px 20px rgba(46, 229, 157, 0.4); /* Stronger shadow on hover */
+            transform: translateY(-3px);
+        }
+
+        #startButton:active {
+            transform: translateY(1px);
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        #muteButton {
+            margin-left: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #ddd;
+            padding: 8px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+        }
+
+        #muteButton:hover {
+            background: rgba(0, 0, 0, 0.7);
+            border-color: #fff;
+        }
+
+        #muteButton img {
+            width: 80%;
+            height: 80%;
+            filter: invert(1);
+        }
+
+        .game-over-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+            z-index: 10;
+            display: none; /* Initially hidden */
+        }
+
+        .game-over-content {
+            border: 4px solid #f00;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        #restartButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            background: linear-gradient(135deg, #ff6b6b, #c72c41);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease 0s;
+            font-family: 'Press Start 2P', cursive;
+            outline: none;
+        }
+
+        #restartButton:hover {
+            background: linear-gradient(135deg, #ff4757, #a91b2d);
+            box-shadow: 0px 15px 20px rgba(255, 105, 180, 0.4);
+            transform: translateY(-3px);
+        }
+
+        #restartButton:active {
+            transform: translateY(1px);
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        #scoreDisplay {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+             transform: translateX(-50%);
+            color: #fff;
+            font-size: 1rem;
+            z-index: 10;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: rgba(0, 0, 0, 0.6);
+            border: 2px solid #ddd;
+        }
+
+        #leftButton, #rightButton { /* New buttons for mobile controls */
+            position: absolute;
+            bottom: 20px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+            color: white;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-family: 'Press Start 2P', cursive;
+            outline: none;
+            z-index: 11; /* Ensure buttons are above canvas */
+        }
+
+        #leftButton {
+            left: 20px;
+        }
+
+        #rightButton {
+            right: 20px;
+        }
+
+        #leftButton:hover, #rightButton:hover {
+            background: rgba(0, 0, 0, 0.7);
+            border-color: #fff;
+        }
+
+        #leftButton:active, #rightButton:active {
+            background: rgba(0, 0, 0, 0.9);
+            transform: translateY(2px);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            #gameCanvas {
+                border-width: 1px;
+            }
+            #startButton, #muteButton {
+                font-size: 0.8rem;
+                padding: 8px 16px;
+            }
+            .game-over-content {
+                font-size: 1.2rem;
+                padding: 15px;
+            }
+            #scoreDisplay {
+                font-size: 0.8rem;
+                padding: 8px;
+            }
+            #leftButton, #rightButton {
+                font-size: 0.8rem;
+                padding: 8px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <canvas id="gameCanvas"></canvas>
+        <div id="scoreDisplay">Score: 0</div>
+        <div style="display: flex; justify-content: center; margin-top: 20px;">
+            <button id="startButton">Start</button>
+            <button id="muteButton"><img id="muteIcon" src="https://unpkg.com/lucide-static@latest/icons/volume-2.svg" /></button>
+        </div>
+        <button id="leftButton">Left</button> <button id="rightButton">Right</button>
+        <div class="game-over-overlay">
+            <div class="game-over-content">
+                <h2>Game Over</h2>
+                <p>Final Score: <span id="finalScore">0</span></p>
+                <button id="restartButton">Restart</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const startButton = document.getElementById('startButton');
+        const muteButton = document.getElementById('muteButton');
+        const muteIcon = document.getElementById('muteIcon');
+        const gameOverOverlay = document.querySelector('.game-over-overlay');
+        const restartButton = document.getElementById('restartButton');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const finalScoreDisplay = document.getElementById('finalScore');
+        const leftButton = document.getElementById('leftButton');  // Get the left button
+        const rightButton = document.getElementById('rightButton'); // Get the right button
+
+        let dimensions = { width: 0, height: 0 };
+        const updateDimensions = () => {
+            const containerElement = document.querySelector('.container');
+            const width = Math.min(containerElement.clientWidth, 600); // Max width of 600
+            const height = width * (4 / 3); // Maintain aspect ratio
+            dimensions = { width, height };
+
+            canvas.width = dimensions.width;
+            canvas.height = dimensions.height;
+        };
+
+        updateDimensions();
+        const resizeObserver = new ResizeObserver(updateDimensions);
+        resizeObserver.observe(document.querySelector('.container'));
+        window.addEventListener('resize', updateDimensions);
+
+
+        let player;
+        let obstacles = [];
+        let score = 0;
+        let gameRunning = false;
+        let muted = false;
+        let animationId;
+        let gameSpeed = 1;  // Added for difficulty scaling
+        let obstacleSpawnRate = 1000; // Initial spawn rate in milliseconds
+        let scoreThreshold = 100; // Increase speed every 100 points now
+        let gameLevel = 1;
+        let leftButtonPressed = false;
+        let rightButtonPressed = false;
+
+        // --- Sound Effects (Tone.js) ---
+        const synth = new Tone.Synth().toDestination();
+
+        function playSound(type) {
+            if (muted) return;
+            const now = Tone.now();
+            switch (type) {
+                case 'start':
+                    synth.triggerAttackRelease("C4", "8n", now);
+                    break;
+                case 'hit':
+                   // synth.triggerAttackRelease("G4", "8n", now);  // Simple tone
+                    // More complex sound (a short, descending sweep)
+                    synth.triggerAttackRelease("C4", "16n", now);
+                    synth.triggerAttackRelease("A3", "16n", now + 0.1);
+                    synth.triggerAttackRelease("G3", "16n", now + 0.2);
+                    break;
+                case 'gameOver':
+                    // A longer, lower sound
+                    synth.triggerAttackRelease("C2", "1n", now);
+                    break;
+            }
+        }
+
+        // --- Game Object Creation ---
+        function createPlayer() {
+            return {
+                x: dimensions.width / 2 - 25,
+                y: dimensions.height - 60,
+                width: 50,
+                height: 50,
+                color: 'rgba(0, 255, 255, 0.8)', // Glowing cyan
+                speed: 5, // Increased player speed
+            };
+        }
+
+        function createObstacle(x = Math.random() * (dimensions.width - 30)) {
+            const baseSize = 20;
+            const sizeVariation = Math.random() * 10; // Size varies a bit
+            const finalSize = baseSize + sizeVariation;
+            return {
+                x: x,
+                y: -finalSize,
+                size: finalSize,
+                color: `hsl(${Math.random() * 360}, 100%, 50%)`, // Random glowing color
+                speed: 3 + gameSpeed * 0.5, // Obstacle speed increases over time
+            };
+        }
+
+        // --- Obstacle Management ---
+        function spawnObstacles() {
+            if (gameRunning) {
+                obstacles.push(createObstacle());
+                setTimeout(spawnObstacles, obstacleSpawnRate); // Dynamic spawn rate
+            }
+        }
+
+        function updateObstacles() {
+            obstacles.forEach((obstacle, index) => {
+                obstacle.y += obstacle.speed ; // Increased obstacle speed
+                if (obstacle.y > dimensions.height) {
+                    obstacles.splice(index, 1);
+                    score += 10;
+                    scoreDisplay.textContent = `Score: ${score}`;
+                    if (score >= scoreThreshold * gameLevel) {
+                        gameSpeed += 15.5;         // Increase game speed even more
+                        // obstacleSpawnRate -= 0; // Keep spawn rate constant
+                        gameLevel++;
+                        scoreThreshold += 10;
+                    }
+                }
+            });
+        }
+
+        function drawObstacles() {
+            obstacles.forEach(obstacle => {
+                ctx.shadowColor = obstacle.color;
+                ctx.shadowBlur = 10;
+                ctx.fillStyle = obstacle.color;
+                ctx.beginPath();
+                ctx.arc(obstacle.x, obstacle.y, obstacle.size / 2, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.fill();
+                ctx.shadowBlur = 0; // Reset shadow
+            });
+        }
+
+        // --- Collision Detection ---
+        function checkCollision() {
+            for (const obstacle of obstacles) {
+                const dx = player.x + player.width / 2 - obstacle.x;
+                const dy = player.y + player.height / 2 - obstacle.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < player.width / 2 + obstacle.size / 2) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // --- Game Loop ---
+        function gameLoop() {
+            if (!gameRunning) return;
+
+            // Clear canvas
+            ctx.clearRect(0, 0, dimensions.width, dimensions.height);
+
+            // Update game elements
+            updatePlayer();
+            updateObstacles();
+
+            // Draw everything
+            drawPlayer();
+            drawObstacles();
+
+            if (checkCollision()) {
+                gameRunning = false;
+                playSound('hit');
+                playSound('gameOver');
+                finalScoreDisplay.textContent = score;
+                gameOverOverlay.style.display = 'flex';
+                cancelAnimationFrame(animationId);
+            } else {
+                animationId = requestAnimationFrame(gameLoop);
+            }
+        }
+
+        // --- Player Controls ---
+        const keys = {};
+        let touchStartX = null;
+
+        document.addEventListener('keydown', (e) => {
+            keys[e.key] = true;
+        });
+
+        document.addEventListener('keyup', (e) => {
+            keys[e.key] = false;
+        });
+
+        // Touch events for mobile controls
+        canvas.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+        });
+
+        canvas.addEventListener('touchend', (e) => {
+            touchStartX = null;
+        });
+
+        canvas.addEventListener('touchmove', (e) => {
+            if (!touchStartX) return;
+
+            const touchX = e.touches[0].clientX;
+            const touchDiff = touchX - touchStartX;
+
+            if (touchDiff > 5) { // Adjust sensitivity as needed
+                keys['ArrowRight'] = true;
+                keys['ArrowLeft'] = false;
+            } else if (touchDiff < -5) {
+                keys['ArrowLeft'] = true;
+                keys['ArrowRight'] = false;
+            } else {
+                keys['ArrowLeft'] = false;
+                keys['ArrowRight'] = false;
+            }
+            touchStartX = touchX;
+        });
+
+        // --- Virtual button controls ---
+        leftButton.addEventListener('touchstart', () => {
+            leftButtonPressed = true;
+        });
+        leftButton.addEventListener('touchend', () => {
+            leftButtonPressed = false;
+        });
+        rightButton.addEventListener('touchstart', () => {
+            rightButtonPressed = true;
+        });
+        rightButton.addEventListener('touchend', () => {
+            rightButtonPressed = false;
+        });
+
+        function updatePlayer() {
+            if (keys['ArrowLeft'] || keys['a'] || leftButtonPressed) {
+                player.x -= player.speed;
+            }
+            if (keys['ArrowRight'] || keys['d'] || rightButtonPressed) {
+                player.x += player.speed;
+            }
+            // Removed vertical movement
+            //if (keys[' '] || keys['w'] || keys['ArrowUp']) {
+            //    player.y -= player.speed;
+            //}
+            //if (keys['s'] || keys['ArrowDown']) {
+            //    player.y += player.speed;
+            //}
+
+            // Keep player within bounds
+            player.x = Math.max(0, Math.min(player.x, dimensions.width - player.width));
+            //player.y = Math.max(0, Math.min(player.y, dimensions.height - player.height)); // Keep within vertical bounds - removed.
+        }
+
+        function drawPlayer() {
+            ctx.shadowColor = player.color;
+            ctx.shadowBlur = 15;
+            ctx.fillStyle = player.color;
+            ctx.fillRect(player.x, player.y, player.width, player.height);
+            ctx.shadowBlur = 0;
+        }
+
+        // --- Event Listeners ---
+        startButton.addEventListener('click', () => {
+            if (!gameRunning) {
+                startButton.textContent = 'Restart'; // Change button text
+                gameOverOverlay.style.display = 'none';
+                score = 0;
+                scoreDisplay.textContent = `Score: ${score}`;
+                player = createPlayer();
+                obstacles = [];
+                gameSpeed = 1;
+                obstacleSpawnRate = 1000;
+                gameLevel = 1;
+                gameRunning = true;
+                playSound('start');
+                spawnObstacles();
+                gameLoop();
+            }
+        });
+
+        muteButton.addEventListener('click', () => {
+            muted = !muted;
+            muteIcon.src = muted
+                ? "https://unpkg.com/lucide-static@latest/icons/volume-x.svg"
+                : "https://unpkg.com/lucide-static@latest/icons/volume-2.svg";
+        });
+
+        restartButton.addEventListener('click', () => {
+            startButton.click(); // Simulate click on start button
+        });
+
+        // --- Initial Setup ---
+        //startGame(); // Start the game when the page loads - removed.  Start on button press now.
+    </script>
+</body>
+</html>
