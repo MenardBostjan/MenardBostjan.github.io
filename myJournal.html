@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Colorful Journal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .entry-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .entry-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1f2937;
+        }
+        .entry-content {
+            font-size: 1rem;
+            line-height: 1.5rem;
+            color: #4b5563;
+        }
+        .entry-date {
+            font-size: 0.875rem;
+            color: #a0aec0;
+            margin-top: 1rem;
+            display: block;
+        }
+        .edit-button, .delete-button {
+            margin-top: 0.75rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-right: 0.5rem;
+        }
+        .edit-button {
+            background-color: #f59e0b; /* Yellow */
+            color: white;
+        }
+        .edit-button:hover {
+            background-color: #d97706; /* Darker Yellow */
+        }
+        .delete-button {
+            background-color: #dc2626; /* Red */
+            color: white;
+        }
+        .delete-button:hover {
+            background-color: #b91c1c; /* Darker Red */
+        }
+        .new-entry-form {
+            background-color: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .new-entry-title-input, .new-entry-content-input, .new-entry-food-input, .new-entry-work-input, .new-entry-drink-input, .new-entry-mood-others-input{
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border-radius: 0.375rem;
+            border: 1px solid #e2e8f0;
+            font-size: 1rem;
+            color: #4b5563;
+            box-sizing: border-box; /* Ensure padding doesn't affect width */
+        }
+        .new-entry-content-input {
+            height: 8rem;
+            resize: vertical;
+        }
+        .add-entry-button {
+            padding: 0.75rem 1.5rem;
+            background-color: #10b981; /* Green */
+            color: white;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            border: none;
+        }
+        .add-entry-button:hover {
+            background-color: #059669; /* Darker Green */
+        }
+        .form-title{
+             font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+        .slider-group {
+            margin-bottom: 1rem;
+        }
+        .slider-label {
+            display: block;
+            font-size: 0.875rem;
+            color: #718096;
+            margin-bottom: 0.25rem;
+        }
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 0.5rem;
+            border-radius: 0.5rem;
+            background: #e2e8f0;
+            outline: none;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+        }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 50%;
+            background: #10b981;
+            cursor: pointer;
+        }
+        .slider::-moz-range-thumb {
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 50%;
+            background: #10b981;
+            cursor: pointer;
+        }
+        .slider:focus::-webkit-slider-thumb {
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
+        }
+        .slider:focus::-moz-range-thumb {
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
+        }
+        .date-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .date-navigation button {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            background-color: #f0f0f0;
+            color: #333;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+        .date-navigation button:hover {
+            background-color: #ccc;
+        }
+        .date-navigation h2 {
+            font-size: 1.25rem;
+            margin: 0;
+        }
+        #sidebar {
+            width: 25%;
+            padding-right: 2rem;
+        }
+        #content {
+            width: 75%;
+        }
+        .main-container {
+            display: flex;
+            flex-direction: row;
+        }
+        #analysis-links {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        #analysis-links li {
+            margin-bottom: 0.5rem;
+        }
+        #analysis-links li a {
+            color: #4b5563;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            display: block;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+        }
+        #analysis-links li a:hover {
+            color: #10b981;
+            background-color: #f7fafc;
+        }
+        #sign-in-button {
+            padding: 0.75rem 1.5rem;
+            background-color: #4285f4; /* Google Blue */
+            color: white;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            border: none;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+        #sign-in-button:hover {
+            background-color: #3367d6; /* Darker Blue */
+        }
+        .hidden {
+            display: none;
+        }
+        #user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        #user-info img {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-6">
+    <div class="max-w-3xl mx-auto">
+        <h1 class="text-3xl font-semibold text-gray-800 mb-6 text-center">My Colorful Journal</h1>
+        <div id="sign-in-container" class="text-center">
+             <input type="email" id="email" placeholder="Email" class="new-entry-title-input">
+            <input type="password" id="password" placeholder="Password" class="new-entry-title-input">
+            <button onclick="signUp()" class="add-entry-button" >Sign Up</button>
+            <button onclick="signIn()" class="add-entry-button">Sign In</button>
+        </div>
+        <div id="user-info" class="hidden">
+            <img id="user-profile-pic" src="" alt="User Profile">
+            <p><span id="user-name"></span> (<span id="user-email"></span>)</p>
+            <button id="sign-out-button" class="bg-gray-200 text-gray-700 rounded-md px-4 py-2 hover:bg-gray-300 transition duration-150 hidden">Sign Out</button>
+        </div>
+
+        <div class="main-container">
+            <div id="sidebar">
+                <div class="date-navigation">
+                    <button id="prev-day">❮</button>
+                    <h2 id="current-date"></h2>
+                    <button id="next-day">❯</button>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-2">Analysis</h3>
+                    <ul id="analysis-links">
+                        <li><a href="#">Mood Over Time</a></li>
+                        <li><a href="#">Performance Trends</a></li>
+                        <li><a href="#">Correlations</a></li>
+                        <li><a href="#">Custom Analysis</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div id="content">
+                <div id="journal-entries">
+                    </div>
+                <div class="new-entry-form">
+                    <h2 class="form-title">New Journal Entry</h2>
+                    <input type="text" id="new-entry-title" placeholder="Title" class="new-entry-title-input">
+                    <textarea id="new-entry-content" placeholder="Write your thoughts..." class="new-entry-content-input"></textarea>
+                    <input type="text" id="new-entry-food" placeholder="What have you eaten today?" class="new-entry-food-input">
+                    <input type="text" id="new-entry-work" placeholder="What kind of work have you done and how many hours?" class="new-entry-work-input">
+                    <input type="text" id="new-entry-drink" placeholder="How much and what have you drunk?" class="new-entry-drink-input">
+                    <input type="text" id="new-entry-mood-others" placeholder="What kind of mood were people around you (perceived)?" class="new-entry-mood-others-input">
+                    <div class="slider-group">
+                        <label for="mood-slider" class="slider-label">Mood</label>
+                        <input type="range" id="mood-slider" min="1" max="10" value="5" class="slider">
+                        <p id="mood-value">5</p>
+                    </div>
+                    <div class="slider-group">
+                        <label for="performance-slider" class="slider-label">Performance</label>
+                        <input type="range" id="performance-slider" min="1" max="10" value="5" class="slider">
+                         <p id="performance-value">5</p>
+                    </div>
+                    <div class="slider-group">
+                        <label for="energy-slider" class="slider-label">Energy Level</label>
+                        <input type="range" id="energy-slider" min="1" max="10" value="5" class="slider">
+                        <p id="energy-value">5</p>
+                    </div>
+                    <div class="slider-group">
+                        <label for="stress-slider" class="slider-label">Stress Level</label>
+                        <input type="range" id="stress-slider" min="1" max="10" value="5" class="slider">
+                        <p id="stress-value">5</p>
+                    </div>
+                    <button id="add-entry-button" class="add-entry-button">Add New Entry</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-auth.js"></script>
+    <script>
+        const journalEntriesContainer = document.getElementById('journal-entries');
+        const newEntryTitleInput = document.getElementById('new-entry-title');
+        const newEntryContentInput = document.getElementById('new-entry-content');
+        const addEntryButton = document.getElementById('add-entry-button');
+        const moodSlider = document.getElementById('mood-slider');
+        const performanceSlider = document.getElementById('performance-slider');
+        const energySlider = document.getElementById('energy-slider');
+        const stressSlider = document.getElementById('stress-slider');
+        const moodValueDisplay = document.getElementById('mood-value');
+        const performanceValueDisplay = document.getElementById('performance-value');
+        const energyValueDisplay = document.getElementById('energy-value');
+        const stressValueDisplay = document.getElementById('stress-value');
+        const currentDateDisplay = document.getElementById('current-date');
+        const prevDayButton = document.getElementById('prev-day');
+        const nextDayButton = document.getElementById('next-day');
+        const newEntryFoodInput = document.getElementById('new-entry-food');
+        const newEntryWorkInput = document.getElementById('new-entry-work');
+        const newEntryDrinkInput = document.getElementById('new-entry-drink');
+        const newEntryMoodOthersInput = document.getElementById('new-entry-mood-others');
+        const signInButton = document.getElementById('sign-in-button');
+        const signOutButton = document.getElementById('sign-out-button');
+        const signInContainer = document.getElementById('sign-in-container');
+        const userInfoDisplay = document.getElementById('user-info');
+        const userNameDisplay = document.getElementById('user-name');
+        const userEmailDisplay = document.getElementById('user-email');
+        const userProfilePicDisplay = document.getElementById('user-profile-pic');
+        const mainContainer = document.querySelector('.main-container');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+
+
+        let entries = [];
+        let currentDate = new Date();
+        let userEmail = null; // To store the logged-in user's email.  IMPORTANT
+        let firebaseConfig = {
+            apiKey: "AIzaSyCu26b1lPJZEa3-nAfPefRrckOKLfXD7Hs", // Replace with your actual API key
+            authDomain: "journal-da66e.firebaseapp.com",
+            databaseURL: "https://journal-da66e.firebaseio.com",
+            projectId: "journal-da66e",
+            storageBucket: "journal-da66e.appspot.com",
+            messagingSenderId: "10280216383",
+            appId: "YOUR_APP_ID" // Replace with your actual App ID
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+
+        // Function to load entries from localStorage
+        function loadEntries() {
+            try {
+                const storedEntries = localStorage.getItem('journalEntries');
+                if (storedEntries) {
+                    entries = JSON.parse(storedEntries);
+                }
+            } catch (error) {
+                console.error("Failed to load entries:", error);
+                entries = [];
+            }
+        }
+
+        // Function to save entries to localStorage
+        function saveEntries() {
+            try {
+                localStorage.setItem('journalEntries', JSON.stringify(entries));
+            } catch (error) {
+                console.error("Failed to save entries:", error);
+            }
+        }
+
+        // Function to render a single journal entry
+        function renderEntry(entry) {
+            const entryDiv = document.createElement('div');
+            entryDiv.classList.add('entry-card');
+            entryDiv.innerHTML = `
+                <h3 class="entry-title">${entry.title}</h3>
+                <p class="entry-content">${entry.content}</p>
+                <p class="entry-date">${entry.date}</p>
+                <p>Mood: ${entry.mood}</p>
+                <p>Performance: ${entry.performance}</p>
+                <p>Energy: ${entry.energy}</p>
+                <p>Stress: ${entry.stress}</p>
+                <p>Food: ${entry.food}</p>
+                <p>Work: ${entry.work}</p>
+                <p>Drinks: ${entry.drinks}</p>
+                <p>Mood of Others: ${entry.moodOthers}</p>
+                <button class="edit-button" data-id="${entry.id}">Edit</button>
+                <button class="delete-button" data-id="${entry.id}">Delete</button>
+            `;
+            journalEntriesContainer.appendChild(entryDiv);
+        }
+
+        // Function to render all journal entries for the current date
+        function renderEntries() {
+            journalEntriesContainer.innerHTML = '';
+            const formattedDate = currentDate.toLocaleDateString();
+            entries.forEach(entry => {
+                if (entry.date === formattedDate) {
+                    renderEntry(entry);
+                }
+            });
+        }
+        function signUp() {
+            var email = emailInput.value;
+            var password = passwordInput.value;
+
+            firebase.auth().createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Sign-Up successful
+                    var user = userCredential.user;
+                    console.log("Sign-up successful:", user);
+                    alert("Sign-up successful!");
+                    // You might want to redirect or update the UI here
+                })
+                .catch((error) => {
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    console.error("Sign-up error:", errorCode, errorMessage);
+                    alert("Sign-up error: " + errorMessage);
+                });
+        }
+
+        function signIn() {
+            var email = emailInput.value;
+            var password = passwordInput.value;
+
+            firebase.auth().signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Sign-in successful
+                    var user = userCredential.user;
+                    console.log("Sign-in successful:", user);
+                    alert("Sign-in successful!");
+                    // You might want to redirect or update the UI here
+                })
+                .catch((error) => {
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    console.error("Sign-in error:", errorCode, errorMessage);
+                    alert("Sign-in error: " + errorMessage);
+                });
+        }
+
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                // User is signed in.
+                console.log('User is signed in:', user);
+                alert('User is signed in: ' + user.email);
+                userEmail = user.email;
+                // Update UI here (e.g., show user profile, hide login form)
+                signInContainer.classList.add('hidden');
+                userInfoDisplay.classList.remove('hidden');
+                userNameDisplay.textContent = user.displayName ? user.displayName : 'User';
+                userEmailDisplay.textContent = user.email;
+                userProfilePicDisplay.src = user.photoURL ? user.photoURL : '';
+                signOutButton.classList.remove('hidden');
+                mainContainer.classList.remove('hidden');
+                renderEntries();
+
+            } else {
+                // User is signed out.
+                console.log('User is signed out.');
+                alert('User is signed out.');
+                // Update UI here (e.g., show login form, hide user profile)
+                signInContainer.classList.remove('hidden');
+                userInfoDisplay.classList.add('hidden');
+                signOutButton.classList.add('hidden');
+                mainContainer.classList.add('hidden');
+                userEmail = null;
+                entries = [];
+                renderEntries();
+            }
+        });
+
+        signOutButton.addEventListener('click', () => {
+            firebase.auth().signOut().then(() => {
+                // Sign-out successful.
+                console.log("Signed out");
+                alert("Signed out");
+            }).catch((error) => {
+                // An error happened.
+                console.error("Sign out error", error);
+                alert("Sign out error: " + error.message)
+            });
+        });
+
+        // Function to add a new journal entry
+        function addEntry() {
+            const title = newEntryTitleInput.value.trim();
+            const content = newEntryContentInput.value.trim();
+            const mood = moodSlider.value;
+            const performance = performanceSlider.value;
+            const energy = energySlider.value;
+            const stress = stressSlider.value;
+            const date = currentDate.toLocaleDateString();
+            const food = newEntryFoodInput.value.trim();
+            const work = newEntryWorkInput.value.trim();
+            const drinks = newEntryDrinkInput.value.trim();
+            const moodOthers = newEntryMoodOthersInput.value.trim();
+
+            if (title === '' || content === '') {
+                alert('Please fill in both title and content!');
+                return;
+            }
+
+            const newEntry = {
+                id: Date.now(),
+                title: title,
+                content: content,
+                date: date,
+                mood: mood,
+                performance: performance,
+                energy: energy,
+                stress: stress,
+                food: food,
+                work: work,
+                drinks: drinks,
+                moodOthers: moodOthers,
+                userEmail: userEmail  // Add the user's email to the entry
+            };
+
+            entries.push(newEntry);
+            saveEntries();
+            renderEntries();
+            newEntryTitleInput.value = '';
+            newEntryContentInput.value = '';
+            moodSlider.value = 5;
+            performanceSlider.value = 5;
+            energySlider.value = 5;
+            stressSlider.value = 5;
+            moodValueDisplay.textContent = 5;
+            performanceValueDisplay.textContent = 5;
+            energyValueDisplay.textContent = 5;
+            stressValueDisplay.textContent = 5;
+            newEntryFoodInput.value = '';
+            newEntryWorkInput.value = '';
+            newEntryDrinkInput.value = '';
+            newEntryMoodOthersInput.value = '';
+        }
+
+        // Function to handle editing an existing entry
+        function editEntry(id) {
+            const entryToEditIndex = entries.findIndex(entry => entry.id === id);
+
+            if (entryToEditIndex === -1) {
+                console.error("Entry to edit not found:", id);
+                return;
+            }
+
+            const entryToEdit = entries[entryToEditIndex];
+
+
+
+            newEntryTitleInput.value = entryToEdit.title;
+            newEntryContentInput.value = entryToEdit.content;
+            moodSlider.value = entryToEdit.mood;
+            performanceSlider.value = entryToEdit.performance;
+            energySlider.value = entryToEdit.energy;
+            stressSlider.value = entryToEdit.stress;
+            moodValueDisplay.textContent = entryToEdit.mood;
+            performanceValueDisplay.textContent = entryToEdit.performance;
+            energyValueDisplay.textContent = entryToEdit.energy;
+            stressSlider.value = entryToEdit.stress;
+            newEntryFoodInput.value = entryToEdit.food;
+            newEntryWorkInput.value = entryToEdit.work;
+            newEntryDrinkInput.value = entryToEdit.drinks;
+            newEntryMoodOthersInput.value = entryToEdit.moodOthers;
+
+            addEntryButton.textContent = 'Update Entry';
+            addEntryButton.removeEventListener('click', addEntry);
+            addEntryButton.addEventListener('click', function updateEntryHandler() {
+                const updatedTitle = newEntryTitleInput.value.trim();
+                const updatedContent = newEntryContentInput.value.trim();
+                const updatedMood = moodSlider.value;
+                const updatedPerformance = performanceSlider.value;
+                const updatedEnergy = energySlider.value;
+                const updatedStress = stressSlider.value;
+                const updatedFood = newEntryFoodInput.value.trim();
+                const updatedWork = newEntryWorkInput.value.trim();
+                const updatedDrinks = newEntryDrinkInput.value.trim();
+                const updatedMoodOthers = newEntryMoodOthersInput.value.trim();
+
+                entries[entr
