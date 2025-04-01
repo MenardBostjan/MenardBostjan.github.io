@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Firebase Authentication Example</title>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-auth.js"></script>
+
+    <script>
+      // Your web app's Firebase configuration
+      var firebaseConfig = {
+        apiKey: "YOUR_API_KEY", // Replace with your actual API key
+        authDomain: "journal-da66e.firebaseapp.com",
+        databaseURL: "https://journal-da66e.firebaseio.com",
+        projectId: "journal-da66e",
+        storageBucket: "journal-da66e.appspot.com",
+        messagingSenderId: "10280216383",
+        appId: "YOUR_APP_ID" // Replace with your actual App ID
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+    </script>
+</head>
+<body>
+
+    <h2>Sign Up/Sign In</h2>
+
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="signUp()">Sign Up</button>
+    <button onclick="signIn()">Sign In</button>
+
+    <script>
+        function signUp() {
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+
+            firebase.auth().createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Sign-Up successful
+                    var user = userCredential.user;
+                    console.log("Sign-up successful:", user);
+                    alert("Sign-up successful!");
+                    // You might want to redirect or update the UI here
+                })
+                .catch((error) => {
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    console.error("Sign-up error:", errorCode, errorMessage);
+                    alert("Sign-up error: " + errorMessage);
+                });
+        }
+
+        function signIn() {
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+
+            firebase.auth().signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Sign-in successful
+                    var user = userCredential.user;
+                    console.log("Sign-in successful:", user);
+                    alert("Sign-in successful!");
+                    // You might want to redirect or update the UI here
+                })
+                .catch((error) => {
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    console.error("Sign-in error:", errorCode, errorMessage);
+                    alert("Sign-in error: " + errorMessage);
+                });
+        }
+
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                // User is signed in.
+                console.log('User is signed in:', user);
+                alert('User is signed in: ' + user.email);
+                // Update UI here (e.g., show user profile, hide login form)
+            } else {
+                // User is signed out.
+                console.log('User is signed out.');
+                alert('User is signed out.');
+                // Update UI here (e.g., show login form, hide user profile)
+            }
+        });
+    </script>
+
+</body>
+</html>
