@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Draggable Chatbot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        #chatbot-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            min-width: 300px;
+            min-height: 400px;
+            z-index: 1000;
+            user-select: none;
+            cursor: grab;
+            display: flex;
+            flex-direction: column;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), 0 6px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #chatbot-header {
+            cursor: move;
+            flex-shrink: 0;
+        }
+        
+        #chat-body {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            overflow-y: auto;
+            border-bottom: 1px solid #e5e7eb;
+            gap: 1rem;
+        }
+        
+        /* Resize handles */
+        .resizer {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background-color: transparent;
+            z-index: 1;
+        }
+
+        .resizer.top-left {
+            top: 0;
+            left: 0;
+            cursor: nwse-resize;
+        }
+        .resizer.top-right {
+            top: 0;
+            right: 0;
+            cursor: nesw-resize;
+        }
+        .resizer.bottom-left {
+            bottom: 0;
+            left: 0;
+            cursor: nesw-resize;
+        }
+        .resizer.bottom-right {
+            bottom: 0;
+            right: 0;
+            cursor: nwse-resize;
+        }
+
+        .resizer.top {
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50%;
+            cursor: ns-resize;
+        }
+        .resizer.bottom {
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50%;
+            cursor: ns-resize;
+        }
+        .resizer.left {
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 50%;
+            cursor: ew-resize;
+        }
+        .resizer.right {
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 50%;
+            cursor: ew-resize;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div id="chatbot-container" class="bg-white/80 rounded-xl overflow-hidden shadow-2xl flex flex-col transition-all duration-300">
+        
+        <!-- Header for dragging -->
+        <div id="chatbot-header" class="w-full bg-gray-900 text-white p-4 flex items-center justify-between shadow-lg">
+            <h2 class="text-lg font-semibold">Gemini Chatbot</h2>
+            <button onclick="document.getElementById('chatbot-container').style.display='none';" class="text-white hover:text-gray-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Chat messages container -->
+        <div id="chat-body" class="p-4 space-y-4 overflow-y-auto">
+            <div class="flex justify-start">
+                <div class="bg-blue-500 text-white p-3 rounded-lg max-w-[80%]">
+                    Hello! I'm a chatbot powered by the Gemini API. How can I help you today?
+                </div>
+            </div>
+            <!-- Dynamic messages will be added here -->
+            <div id="loading-indicator" class="flex justify-start hidden">
+                <div class="bg-gray-300 text-gray-900 p-3 rounded-lg max-w-[80%]">
+                    <svg class="animate-spin h-5 w-5 text-gray-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input area -->
+        <div class="p-4 bg-gray-50 flex-shrink-0 flex items-center space-x-2">
+            <textarea id="chat-input" rows="1" placeholder="Type a message..." class="flex-grow p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
+            <button id="send-button" class="bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition-colors duration-200">
+                Send
+            </button>
+            <button id="sparkle-button" class="bg-purple-500 text-white p-3 rounded-lg hover:bg-purple-600 transition-colors duration-200">
+                ✨ Rewrite
+            </button>
+        </div>
+        
+        <!-- Resizable handles -->
+        <div class="resizer top-left"></div>
+        <div class="resizer top-right"></div>
+        <div class="resizer bottom-left"></div>
+        <div class="resizer bottom-right"></div>
+        <div class="resizer top"></div>
+        <div class="resizer bottom"></div>
+        <div class="resizer left"></div>
+        <div class="resizer right"></div>
+
+    </div>
+
+    <script>
+        const chatbotContainer = document.getElementById('chatbot-container');
+        const chatbotHeader = document.getElementById('chatbot-header');
+        const resizers = document.querySelectorAll('.resizer');
+        const chatBody = document.getElementById('chat-body');
+        const chatInput = document.getElementById('chat-input');
+        const sendButton = document.getElementById('send-button');
+        const sparkleButton = document.getElementById('sparkle-button');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        
+        let isDragging = false;
+        let isResizing = false;
+        let startX, startY, startWidth, startHeight;
+        let currentResizer = null;
+        
+        const API_KEY = ""; // Automatically provided in the Canvas environment
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+
+        // Chat history for context
+        const chatHistory = [{
+            role: "user",
+            parts: [{ text: "You are a helpful and friendly chatbot. You answer questions with a joke." }]
+        }];
+
+        // Function to display a message
+        function displayMessage(message, sender) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('flex', sender === 'user' ? 'justify-end' : 'justify-start');
+            messageElement.innerHTML = `
+                <div class="p-3 rounded-lg max-w-[80%] ${sender === 'user' ? 'bg-gray-300 text-gray-900' : 'bg-blue-500 text-white'}">
+                    ${message}
+                </div>
+            `;
+            chatBody.appendChild(messageElement);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        // Function to make the API call
+        async function getGeminiResponse(userPrompt, systemInstruction = null) {
+            try {
+                // Show loading indicator
+                loadingIndicator.classList.remove('hidden');
+                
+                // Construct the API payload
+                let payload = {
+                    contents: [...chatHistory, {
+                        role: "user",
+                        parts: [{ text: userPrompt }]
+                    }],
+                    tools: [{ "google_search": {} }] // Enable Google Search grounding
+                };
+
+                if (systemInstruction) {
+                    payload.systemInstruction = {
+                        parts: [{ text: systemInstruction }]
+                    };
+                }
+
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API call failed with status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                const candidate = result.candidates?.[0];
+                let text = "An error occurred. Please try again.";
+                
+                if (candidate && candidate.content?.parts?.[0]?.text) {
+                    text = candidate.content.parts[0].text;
+                    // Add the AI's response to the chat history for context
+                    chatHistory.push({
+                        role: "model",
+                        parts: [{ text: text }]
+                    });
+                }
+                
+                displayMessage(text, 'model');
+            } catch (error) {
+                console.error("Error fetching Gemini response:", error);
+                displayMessage("Sorry, I'm having trouble connecting right now. Please try again later.", 'model');
+            } finally {
+                // Hide loading indicator
+                loadingIndicator.classList.add('hidden');
+            }
+        }
+        
+        // Handle sending a normal message
+        sendButton.addEventListener('click', () => {
+            const userMessage = chatInput.value.trim();
+            if (userMessage) {
+                displayMessage(userMessage, 'user');
+                chatInput.value = ''; // Clear input
+                getGeminiResponse(userMessage);
+            }
+        });
+
+        // Handle the "Rewrite" button click
+        sparkleButton.addEventListener('click', () => {
+            const userMessage = chatInput.value.trim();
+            if (userMessage) {
+                displayMessage(userMessage, 'user');
+                chatInput.value = ''; // Clear input
+                const systemInstruction = "Rewrite the following text in a more professional and concise tone.";
+                getGeminiResponse(userMessage, systemInstruction);
+            }
+        });
+
+        // Allow sending with Enter key, prevent new line
+        chatInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendButton.click();
+            }
+        });
+
+
+        // Make the window draggable
+        chatbotHeader.addEventListener('mousedown', (e) => {
+            if (e.target.tagName !== 'BUTTON') {
+                isDragging = true;
+                const rect = chatbotContainer.getBoundingClientRect();
+                startX = e.clientX - rect.left;
+                startY = e.clientY - rect.top;
+                chatbotContainer.style.cursor = 'grabbing';
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            isResizing = false;
+            chatbotContainer.style.cursor = 'grab';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                const newLeft = e.clientX - startX;
+                const newTop = e.clientY - startY;
+
+                const bounds = document.body.getBoundingClientRect();
+                const containerRect = chatbotContainer.getBoundingClientRect();
+
+                // Constrain movement within the viewport
+                const constrainedLeft = Math.max(0, Math.min(newLeft, bounds.width - containerRect.width));
+                const constrainedTop = Math.max(0, Math.min(newTop, bounds.height - containerRect.height));
+
+                chatbotContainer.style.left = `${constrainedLeft}px`;
+                chatbotContainer.style.top = `${constrainedTop}px`;
+                chatbotContainer.style.transform = 'none'; // Remove transform for fixed positioning
+            }
+        });
+
+        // Make the window resizable
+        resizers.forEach(resizer => {
+            resizer.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                isResizing = true;
+                const rect = chatbotContainer.getBoundingClientRect();
+                startX = e.clientX;
+                startY = e.clientY;
+                startWidth = rect.width;
+                startHeight = rect.height;
+                currentResizer = resizer.className.split(' ')[1];
+            });
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isResizing) return;
+            
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+
+            const rect = chatbotContainer.getBoundingClientRect();
+
+            let newWidth = startWidth;
+            let newHeight = startHeight;
+            let newTop = rect.top;
+            let newLeft = rect.left;
+
+            if (currentResizer.includes('right')) {
+                newWidth = startWidth + dx;
+            }
+            if (currentResizer.includes('left')) {
+                newWidth = startWidth - dx;
+                newLeft = rect.left + dx;
+            }
+            if (currentResizer.includes('bottom')) {
+                newHeight = startHeight + dy;
+            }
+            if (currentResizer.includes('top')) {
+                newHeight = startHeight - dy;
+                newTop = rect.top + dy;
+            }
+
+            chatbotContainer.style.width = `${Math.max(300, newWidth)}px`;
+            chatbotContainer.style.height = `${Math.max(400, newHeight)}px`;
+            
+            if (currentResizer.includes('top') || currentResizer.includes('left')) {
+                chatbotContainer.style.top = `${newTop}px`;
+                chatbotContainer.style.left = `${newLeft}px`;
+            }
+        });
+
+        // Prevent resizing if the mouse is released
+        document.addEventListener('mouseup', () => {
+            isResizing = false;
+        });
+
+    </script>
+</body>
+</html>
